@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  reports:
+    build: .
+    network_mode: "host"
+    container_name: api-eyechecker
+    ports:
+      - "8080:8080"
+    env_file: .env
+    command: "python application.py"

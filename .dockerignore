@@ -1,0 +1,8 @@
+.git
+.gitignore
+.env
+README.md
+*.db
+*/**/*.pyc
+*/**/**/*.pyc
+*.pyc
