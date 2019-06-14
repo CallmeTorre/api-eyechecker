@@ -41,13 +41,9 @@ def load():
 
     real = set(os.environ.keys())
 
-    bad = False
     diff = ALWAYS_REQUIRED - real
     if len(diff) > 0:
-        bad = True
         logging.error('Missing environment variables: %s', ', '.join(diff))
-
-    if bad:
         sys.exit(1)
-    else:
-        logging.info('All environment variables are valid.')
+
+    logging.info('All environment variables are valid.')
