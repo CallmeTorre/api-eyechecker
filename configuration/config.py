@@ -20,27 +20,29 @@ ALWAYS_REQUIRED = {'DATABASE_USER',
                    'ENV_SELECTOR',
                    'FLASK_ENV'}
 
-def load():
-    """Load and check all the necessary configuration options"""
+def _load_env_vars():
     # Load environment variables from envfile if present
     ENVFILE_PATH = join(dirname(__file__), '..', '.env')
     load_dotenv(ENVFILE_PATH)
 
+
+def _load_logging_env_vars():
     # Load logging setup
     LOGFILE_PATH = join(dirname(__file__), 'logging.conf')
     logging.config.fileConfig(LOGFILE_PATH)
 
-    reqs = set()
 
-    if os.getenv('ENV_SELECTOR') == 'dev':
-        required = reqs.union(ALWAYS_REQUIRED)
-    else:
-        required = reqs.union(ALWAYS_REQUIRED)
+def load():
+    """Load and check all the necessary configuration options"""
+
+    _load_env_vars()
+
+    _load_logging_env_vars()
 
     real = set(os.environ.keys())
 
     bad = False
-    diff = required - real
+    diff = ALWAYS_REQUIRED - real
     if len(diff) > 0:
         bad = True
         logging.error('Missing environment variables: %s', ', '.join(diff))
