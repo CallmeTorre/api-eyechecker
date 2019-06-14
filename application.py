@@ -1,3 +1,4 @@
+import logging
 from os import getenv
 from traceback import format_exc
 
