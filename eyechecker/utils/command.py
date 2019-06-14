@@ -1,4 +1,4 @@
-from eyechecker.response import Response
+from eyechecker.response.response_class import Response
 
 class Command:
     """
