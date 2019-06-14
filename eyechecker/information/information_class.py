@@ -3,6 +3,9 @@ from sqlalchemy import Table
 from eyechecker.utils.connection import engine, meta
 
 class Information:
+    """
+    Class that contains all the tables from the database.
+    """
 
     def __init__(self):
         self._engine = engine
