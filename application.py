@@ -11,8 +11,10 @@ from flask import (Flask,
 from configuration.config import load
 load()
 from eyechecker.utils.validation import validate_params
-from eyechecker.utils.schemas import newpatientschema
 from eyechecker.utils.command import Command
+from eyechecker.utils.schemas import (newpatientschema,
+                                      patientindexschema)
+
 
 application = Flask(__name__)
 
@@ -41,13 +43,35 @@ class NewPatient(MethodView):
             command.status)
 
 
+class PatientIndex(MethodView):
+    """
+    Class that manages the index of all the patients.
+    """
+
+    decorators = [validate_params(patientindexschema)]
+    def get(self, params):
+        command = Command(params)
+        command.execute("patientindexresponse")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
 new_patient_view = NewPatient.as_view('newpatient')
+patient_index_view = PatientIndex.as_view('patientindex')
 
 application.add_url_rule(
     '/patient/new',
     view_func=new_patient_view,
     methods=[
         'POST',
+    ]
+)
+
+application.add_url_rule(
+    '/patient/index',
+    view_func=patient_index_view,
+    methods=[
+        'GET',
     ]
 )
 
