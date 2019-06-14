@@ -27,9 +27,9 @@ def root():
         jsonify(
             {'status': 'ok'}), 200)
 
-class NewPacient(MethodView):
+class NewPatient(MethodView):
     """
-    Class that manages the creation of a new pacient.
+    Class that manages the creation of a new patient.
     """
 
     decorators = [validate_params(newpatientschema)]
@@ -41,7 +41,7 @@ class NewPacient(MethodView):
             command.status)
 
 
-new_patient_view = NewPacient.as_view('newpatient')
+new_patient_view = NewPatient.as_view('newpatient')
 
 application.add_url_rule(
     '/patient/new',
