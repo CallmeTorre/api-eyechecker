@@ -7,14 +7,16 @@ from flask import (Flask,
                    make_response,
                    request)
 
+from configuration.config import load
+load()
 from eyechecker.utils.validation import validate_params
 from eyechecker.utils.schemas import newpatientschema
 from eyechecker.utils.command import Command
 
 application = Flask(__name__)
 
-if getenv('ENV_SELECTOR') == 'dev':
-    logging.warn('Disabling cross-origin checking')
+if getenv('ENV_SELECTOR') == 'development':
+    logging.info('Disabling cross-origin checking')
     from flask_cors import CORS
     CORS(application)
 
@@ -50,6 +52,9 @@ application.add_url_rule(
 
 @application.errorhandler(500)
 def internal_error(error):
+    """
+    Method that handle how the errors are showed.
+    """
     if getenv('ENV_SELECTOR') == 'dev':
         return make_response(
             jsonify({
