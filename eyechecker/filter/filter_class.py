@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from sqlalchemy import desc
 from sqlalchemy.sql.expression import nullslast
 
@@ -11,25 +13,27 @@ class Filter:
     def __init__(self):
         self.information = Information()
 
+    def _checkcondition(self, key, value):
+        """
+        Method that checks if the key is different to none
+        so we can store the filter.
+        """
+        if value != 'all':
+            return self.information.patientindexview_table.\
+                c[key].ilike('%' + value + '%')
+
     def patientindexfilter(self, params):
         """
         Method that returns the filters for the patient's index.
         """
         filters = []
-        if params['nombre'] != 'all':
-            filters.append(
-                self.information.patientindexview_table.c.\
-                    nombre.ilike('%' + params['nombre'] + '%'))
+        params_copy = deepcopy(params)
+        params_copy.pop('orderBy')
 
-        if params['apellido_paterno'] != 'all':
-            filters.append(
-                self.information.patientindexview_table.c.\
-                    nombre.ilike('%' + params['apellido_paterno'] + '%'))
-
-        if params['email'] != 'all':
-            filters.append(
-                self.information.patientindexview_table.c.\
-                    nombre.ilike('%' + params['email'] + '%'))
+        for key, value in params_copy.items():
+            condition = self._checkcondition(key, value)
+            if condition is not None:
+                filters.append(condition)
 
         return filters
 
