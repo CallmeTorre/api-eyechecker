@@ -7,6 +7,7 @@ Create `.env` file with the following variables:
   3 DATABASE_HOST
   4 DATABASE_USER
   5 ENV_SELECTOR
+  6 FLASK_ENV
 ```
 To start API Eyechecker for the first time it is necessary to run the following commands in the order given:
 
