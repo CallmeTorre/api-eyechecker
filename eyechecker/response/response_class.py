@@ -19,3 +19,11 @@ class Response:
         id_patient = engine.execute(
             self.query.newpatientquery(params)).inserted_primary_key[0]
         return self.formatter.newpatientformatter(id_patient), 200
+
+    def patientindexresponse(self, params):
+        """
+        Method that retrieves all the patients acording to the given filters.
+        """
+        patients = engine.execute(
+            self.query.patientindexquery(params)).fetchall()
+        return self.formatter.patientindexformatter(patients), 200
