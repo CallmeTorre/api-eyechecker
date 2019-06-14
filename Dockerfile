@@ -10,4 +10,4 @@ ADD . /app
 
 EXPOSE 8080
 
-CMD ["gunicorn", "-c", "conf/gunicorn.conf.py", "wsgi:application"]
+CMD ["gunicorn", "-c", "configuration/gunicorn.py", "wsgi:application"]
