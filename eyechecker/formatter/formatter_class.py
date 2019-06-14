@@ -13,3 +13,13 @@ class Formatter:
         patient is created.
         """
         return {'id_paciente': id_patient}
+
+    def _formatpatient(self, patient):
+        return {
+            'nombre': patient.nombre,
+            'apellido_paterno': patient.apellido_paterno,
+            'email': patient.email
+        }
+
+    def patientindexformatter(self, patients):
+        return [self._formatpatient(patient) for patient in patients]
