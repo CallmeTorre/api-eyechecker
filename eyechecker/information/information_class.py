@@ -15,6 +15,11 @@ class Information:
             self.meta,
             autoload=True,
             autoload_with=self.engine)
+        self._patientindexview_table = Table(
+            'pacientesindexview',
+            self.meta,
+            autoload=True,
+            autoload_with=self.engine)
 
 
     @property
@@ -28,3 +33,7 @@ class Information:
     @property
     def patient_table(self):
         return self._patient_table
+
+    @property
+    def patientindexview_table(self):
+        return self._patientindexview_table
