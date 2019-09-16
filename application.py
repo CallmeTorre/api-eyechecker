@@ -12,8 +12,7 @@ from configuration.config import load
 load()
 from eyechecker.utils.validation import validate_params
 from eyechecker.utils.command import Command
-from eyechecker.utils.schemas import (newpatientschema,
-                                      patientindexschema)
+from eyechecker.utils.schemas import (patientschema)
 
 
 application = Flask(__name__)
@@ -29,49 +28,26 @@ def root():
         jsonify(
             {'status': 'ok'}), 200)
 
-class NewPatient(MethodView):
+class PatientView(MethodView):
     """
-    Class that manages the creation of a new patient.
+    Class that manages the patients operations.
     """
 
-    decorators = [validate_params(newpatientschema)]
+    decorators = [validate_params(patientschema)]
     def post(self, params):
-        command = Command(params)
-        command.execute("newpatientresponse")
+        command = Command(params, 'patient')
+        command.execute("create")
         return make_response(
             jsonify(command.result),
             command.status)
 
-
-class PatientIndex(MethodView):
-    """
-    Class that manages the index of all the patients.
-    """
-
-    decorators = [validate_params(patientindexschema)]
-    def get(self, params):
-        command = Command(params)
-        command.execute("patientindexresponse")
-        return make_response(
-            jsonify(command.result),
-            command.status)
-
-new_patient_view = NewPatient.as_view('newpatient')
-patient_index_view = PatientIndex.as_view('patientindex')
+patient_view = PatientView.as_view('patientview')
 
 application.add_url_rule(
-    '/patient/new',
-    view_func=new_patient_view,
+    '/patient',
+    view_func=patient_view,
     methods=[
         'POST',
-    ]
-)
-
-application.add_url_rule(
-    '/patient/index',
-    view_func=patient_index_view,
-    methods=[
-        'GET',
     ]
 )
 

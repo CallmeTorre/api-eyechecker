@@ -1,6 +1,6 @@
 from schema import Schema, Or, Use, And, Optional
 
-newpatientschema = Schema({
+patientschema = Schema({
     "nombre":
         And(Use(str), error="Parametro 'nombre' es invalido"),
     Optional("segundo_nombre"):
@@ -15,16 +15,4 @@ newpatientschema = Schema({
         And(Use(str), error="Parametro 'sexo' es invalido"),
     "email":
         And(Use(str), error="Parametro 'email' es invalido")
-})
-
-
-patientindexschema = Schema({
-    "nombre":
-        And(Use(str), error="Parametro 'nombre' es invalido"),
-    "apellido_paterno":
-        And(Use(str), error="Parametro 'apellido_paterno' es invalido"),
-    "email":
-        And(Use(str), error="Parametro 'email' es invalido"),
-    "orderBy":
-        And(Use(str), error="Parametro 'orderBy' es invalido")
 })

@@ -1,12 +1,12 @@
-from eyechecker.response.response_class import Response
+from eyechecker.factories.person_factory import PersonFactory
 
 class Command:
     """
     Class that represents the Command Design Pattern.
     """
-    def __init__(self, params):
+    def __init__(self, params, person_type):
         self._params = params
-        self._response = Response()
+        self._person = PersonFactory(params).load(person_type)
         self._result = None
         self._status = None
 
@@ -19,5 +19,5 @@ class Command:
         return self._status
 
     def execute(self, method_name):
-        method = getattr(self._response, method_name)
-        self._result, self._status = method(self._params)
+        method = getattr(self._person, method_name)
+        self._result, self._status = method()
