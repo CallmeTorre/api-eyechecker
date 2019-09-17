@@ -41,13 +41,27 @@ class PatientView(MethodView):
             jsonify(command.result),
             command.status)
 
+    def delete(self, params):
+        command = Command(params, 'patient')
+        command.execute("delete")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def put(self, params):
+        command = Command(params, 'patient')
+        command.execute("update")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
 patient_view = PatientView.as_view('patientview')
 
 application.add_url_rule(
     '/patient',
     view_func=patient_view,
     methods=[
-        'POST',
+        'POST', 'DELETE', 'PUT'
     ]
 )
 
