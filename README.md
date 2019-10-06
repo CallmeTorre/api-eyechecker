@@ -14,7 +14,7 @@ To start API Eyechecker for the first time it is necessary to run the following 
   1. Build docker image with `docker-compose build`
   2. Start API reportes with `docker-compose up`
 
-Now you can visit [`localhost:8080/`](http://localhost:8080/) from your browser to check the status(
+Now you can visit [`localhost:8080/`](http://localhost:8080/) from your browser to check the status
 ## Database Diagram
 
 ![Database](docs/images/db.png)
