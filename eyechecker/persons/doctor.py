@@ -6,8 +6,14 @@ from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import (format_doctor, format_account)
 
 class Doctor(Person):
+    """
+    Class that defines main doctor's operations.
+    """
 
     def __init__(self, params):
+        """
+        Doctor's constructor method.
+        """
         super().__init__(params)
         self._table = Table(
             'doctores',
@@ -22,13 +28,23 @@ class Doctor(Person):
 
     @property
     def table(self):
+        """
+        Doctor's table
+        """
         return self._table
 
     @property
     def account(self):
+        """
+        Account's table
+        """
         return self._account
 
+    @classmethod
     def _create_account(self):
+        """
+        Private method that creates a new doctor's account.
+        """
         transaction = self._connection.begin()
         account = format_account(self._params)
         try:
@@ -40,7 +56,11 @@ class Doctor(Person):
             logging.exception(str(e))
             transaction.rollback()
 
+    @classmethod
     def create(self):
+        """
+        Method that creates a new doctor in the database.
+        """
         transaction = self._connection.begin()
         self._params['id_persona'] = self._insert_person()
         doctor = format_doctor(self._params)
@@ -57,7 +77,11 @@ class Doctor(Person):
             transaction.rollback()
             return {'error': "No se puedo crear el doctor"}, 500
 
+    @classmethod
     def delete(self):
+        """
+        Method that deletes a doctor.
+        """
         transaction = self._connection.begin()
         try:
             self._connection.execute(
@@ -71,7 +95,11 @@ class Doctor(Person):
             transaction.rollback()
             return {'error': "No se puedo borrar el doctor"}, 500
 
+    @classmethod
     def update(self):
+        """
+        Method that updates the information of a doctor.
+        """
         try:
             self._connection.execute(
                 self.table.update().\

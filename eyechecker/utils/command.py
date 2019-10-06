@@ -12,12 +12,22 @@ class Command:
 
     @property
     def result(self):
+        """
+        Result from the specified method execution.
+        """
         return self._result
 
     @property
     def status(self):
+        """
+        Result status from the specified method exuction
+        """
         return self._status
 
+    @classmethod
     def execute(self, method_name):
+        """
+        Method that execute a specified method from a class.
+        """
         method = getattr(self._person, method_name)
         self._result, self._status = method()
