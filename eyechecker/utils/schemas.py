@@ -55,5 +55,9 @@ doctorschema = Schema({
     Optional("cedula"):
         And(Use(list), error="Parámetro 'cedula' es inválido"),
     Optional("horario"):
-        And(Use(str), error="Parámetro 'horario' es inválido")
+        And(Use(str), error="Parámetro 'horario' es inválido"),
+    Optional("usuario"):
+        And(Use(list), error="Parámetro 'usuario' es inválido"),
+    Optional("password"):
+        And(Use(str), error="Parámetro 'password' es inválido")
 })
