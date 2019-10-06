@@ -30,3 +30,11 @@ def format_doctor(params):
         'cedula': params['cedula'],
         'horario': params['horario']
     }
+
+
+def format_account(params):
+    return{
+        'id_persona': params['id_doctor'],
+        'usuario': params['usuario'],
+        'password': params['password']
+    }

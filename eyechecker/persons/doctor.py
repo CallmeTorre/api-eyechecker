@@ -1,7 +1,9 @@
+import logging
+
 from sqlalchemy import Table
 
 from eyechecker.persons.person import Person
-from eyechecker.utils.formatter import format_doctor
+from eyechecker.utils.formatter import (format_doctor, format_account)
 
 class Doctor(Person):
 
@@ -12,19 +14,40 @@ class Doctor(Person):
             self.meta,
             autoload=True,
             autoload_with=self.engine)
+        self._account = Table(
+            'cuentas',
+            self.meta,
+            autoload=True,
+            autoload_with=self.engine)
 
     @property
     def table(self):
         return self._table
+
+    @property
+    def account(self):
+        return self._account
+
+    def _create_account(self):
+        account = format_account(self._params)
+        try:
+            self.engine.execute(
+                self.account.insert().values(**account)).inserted_primary_key[0]
+            return id_account
+        except Exception as e:
+            logging.error("No se puedo crear la cuenta")
+            logging.exception(str(e))
+            return None
 
     def create(self):
         self._params['id_persona'] = self._insert_person()
         if self._params['id_persona'] != None:
             doctor = format_doctor(self._params)
             try:
-                id = self.engine.execute(
+                self._params['id_doctor'] = self.engine.execute(
                     self.table.insert().values(**doctor)).inserted_primary_key[0]
-                return {'id_doctor': id,
+                id_account = self._create_account()
+                return {'id_doctor': self._params['id_doctor'],
                         'id_persona': self._params['id_persona']}, 200
             except Exception as e:
                 logging.error("No se puedo crear el doctor")
