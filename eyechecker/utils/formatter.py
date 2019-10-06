@@ -34,7 +34,7 @@ def format_doctor(params):
 
 def format_account(params):
     return{
-        'id_persona': params['id_doctor'],
+        'id_doctor': params['id_doctor'],
         'usuario': params['usuario'],
         'password': params['password']
     }

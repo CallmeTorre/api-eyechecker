@@ -17,6 +17,7 @@ class Person(metaclass=ABCMeta):
             self.meta,
             autoload=True,
             autoload_with=self.engine)
+        self._connection = self.engine.connect()
 
     @property
     def engine(self):
@@ -35,15 +36,18 @@ class Person(metaclass=ABCMeta):
         pass
 
     def _insert_person(self):
+        transaction = self._connection.begin()
         person = format_person(self._params)
         try:
-            id_person = self.engine.execute(
+            id_person = self._connection.execute(
                 self.persons.insert().values(**person)).inserted_primary_key[0]
+            transaction.commit()
             return id_person
         except Exception as e:
             logging.error("No se puedo crear la persona")
             logging.exception(str(e))
-            return None
+            transaction.rollback()
+            raise
 
     @abstractmethod
     def create(self):
