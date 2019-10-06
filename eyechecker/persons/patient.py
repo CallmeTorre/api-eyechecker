@@ -24,7 +24,6 @@ class Patient(Person):
         self._params['id_persona'] = self._insert_person()
         patient = format_patient(self._params)
         try:
-            raise Exception
             id = self._connection.execute(
                 self.table.insert().values(**patient)).inserted_primary_key[0]
             transaction.commit()
