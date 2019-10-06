@@ -17,4 +17,4 @@ To start API Eyechecker for the first time it is necessary to run the following 
 Now you can visit [`localhost:8080/`](http://localhost:8080/) from your browser to check the status
 ## Database Diagram
 
-![Database](docs/images/db.png)
+![Database](resources/images/db.png)
