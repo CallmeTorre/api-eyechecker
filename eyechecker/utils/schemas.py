@@ -1,6 +1,8 @@
 from schema import Schema, Or, Use, And, Optional
 
 patientschema = Schema({
+    Optional("id"):
+        And(Use(str), error="Parámetro 'id' es inválido"),
     Optional("nombre"):
         And(Use(str), error="Parámetro 'nombre' es inválido"),
     Optional("apellido_paterno"):
@@ -9,14 +11,14 @@ patientschema = Schema({
         And(Use(str), error="Parámetro 'apellido_materno' es inválido"),
     Optional("fecha_nacimiento"):
         And(Use(str), error="Parámetro 'fecha_nacimiento' es inválido"),
-    Optional("genero"):
-        And(Use(str), error="Parámetro 'genero' es inválido"),
-    "curp":
-        And(Use(str), error="Parámetro 'curp' es inválido"),
     Optional("email"):
         And(Use(str), error="Parámetro 'email' es inválido"),
-    Optional("telefono"):
-        And(Use(str), error="Parámetro 'telefono' es inválido"),
+    Optional("telefono_celular"):
+        And(Use(str), error="Parámetro 'telefono_celular' es inválido"),
+    Optional("genero"):
+        And(Use(str), error="Parámetro 'genero' es inválido"),
+    Optional("curp"):
+        And(Use(str), error="Parámetro 'curp' es inválido"),
     Optional("ocupacion"):
         And(Use(str), error="Parámetro 'ocupación' es inválido"),
     Optional("estado_civil"):
