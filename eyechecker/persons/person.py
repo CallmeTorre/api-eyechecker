@@ -1,4 +1,6 @@
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import (ABCMeta,
+                 abstractmethod,
+                 abstractproperty)
 
 from sqlalchemy import Table
 
@@ -6,9 +8,16 @@ from eyechecker.utils.connection import engine, meta
 from eyechecker.utils.formatter import format_person
 
 class Person(metaclass=ABCMeta):
+    """
+    Abstract class that defines a person operations
+    and common attributes.
+    """
 
     @abstractmethod
     def __init__(self, params):
+        """
+        Person's constructor method.
+        """
         self._engine = engine
         self._meta = meta
         self._params = params
@@ -21,21 +30,37 @@ class Person(metaclass=ABCMeta):
 
     @property
     def engine(self):
+        """
+        Database engine.
+        """
         return self._engine
 
     @property
     def meta(self):
+        """
+        Database metadata.
+        """
         return self._meta
 
     @property
     def persons(self):
+        """
+        Person's table.
+        """
         return self._persons
 
     @abstractproperty
     def table(self):
+        """
+        Abstract property to define a patient or doctor table.
+        """
         pass
 
+    @classmethod
     def _insert_person(self):
+        """
+        Private method that creates a new person.
+        """
         transaction = self._connection.begin()
         person = format_person(self._params)
         try:
@@ -51,12 +76,21 @@ class Person(metaclass=ABCMeta):
 
     @abstractmethod
     def create(self):
+        """
+        Abstract method that defines a patient or doctor creation method.
+        """
         pass
 
     @abstractmethod
     def delete(self):
+        """
+        Abstract method that defines a patient or doctor delete method.
+        """
         pass
 
     @abstractmethod
     def update(self):
+        """
+        Abstract method that defines a patient or doctor update method.
+        """
         pass

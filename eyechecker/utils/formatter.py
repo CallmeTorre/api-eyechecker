@@ -1,4 +1,7 @@
 def format_person(params):
+    """
+    Function that formats a person to be inserted in the database
+    """
     return {
         'nombre': params['nombre'],
         'apellido_paterno': params['apellido_paterno'],
@@ -11,6 +14,9 @@ def format_person(params):
 
 
 def format_patient(params):
+    """
+    Function that formats a patient to be inserted in the database
+    """
     return {
         'id_persona': params['id_persona'],
         'curp': params['curp'],
@@ -24,6 +30,9 @@ def format_patient(params):
 
 
 def format_doctor(params):
+    """
+    Function that formats a doctor to be inserted in the database
+    """
     return {
         'id_persona': params['id_persona'],
         'organizacion': params['organizacion'],
@@ -33,6 +42,9 @@ def format_doctor(params):
 
 
 def format_account(params):
+    """
+    Function that formats an account to be inserted in the database
+    """
     return{
         'id_doctor': params['id_doctor'],
         'usuario': params['usuario'],

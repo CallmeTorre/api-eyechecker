@@ -6,10 +6,14 @@ from eyechecker.factories.abs_factory import Factory
 from eyechecker.persons.person import Person
 
 class PersonFactory(Factory):
+    """
+    Class that defines a person factory.
+    """
 
     def __init__(self, params):
         self._params = params
 
+    @classmethod
     def load(self, person_type):
         """
         Method that receives a person type and loads its class
