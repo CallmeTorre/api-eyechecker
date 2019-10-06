@@ -12,21 +12,23 @@ from configuration.config import load
 load()
 from eyechecker.utils.validation import validate_params
 from eyechecker.utils.command import Command
-from eyechecker.utils.schemas import (patientschema)
-
+from eyechecker.utils.schemas import (patientschema, doctorschema)
 
 application = Flask(__name__)
+
 
 if getenv('ENV_SELECTOR') == 'development':
     logging.info('Disabling cross-origin checking')
     from flask_cors import CORS
     CORS(application)
 
+
 @application.route('/')
 def root():
     return make_response(
         jsonify(
             {'status': 'ok'}), 200)
+
 
 class PatientView(MethodView):
     """
@@ -55,7 +57,38 @@ class PatientView(MethodView):
             jsonify(command.result),
             command.status)
 
+
+class DoctorView(MethodView):
+    """
+    Class that manages the doctors operations.
+    """
+
+    decorators = [validate_params(doctorschema)]
+    def post(self, params):
+        command = Command(params, 'doctor')
+        command.execute("create")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def delete(self, params):
+        command = Command(params, 'doctor')
+        command.execute("delete")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def put(self, params):
+        command = Command(params, 'doctor')
+        command.execute("update")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+
 patient_view = PatientView.as_view('patientview')
+doctor_view = DoctorView.as_view('doctorview')
+
 
 application.add_url_rule(
     '/patient',
@@ -64,6 +97,14 @@ application.add_url_rule(
         'POST', 'DELETE', 'PUT'
     ]
 )
+application.add_url_rule(
+    '/doctor',
+    view_func=doctor_view,
+    methods=[
+        'POST', 'DELETE', 'PUT'
+    ]
+)
+
 
 @application.errorhandler(500)
 def internal_error(error):
@@ -81,6 +122,7 @@ def internal_error(error):
             jsonify({
                 'error': 'An internal error occurred'
             }), 500)
+
 
 if __name__ == '__main__':
     application.run(host='0.0.0.0', port=8080)
