@@ -21,3 +21,12 @@ def format_patient(params):
         'enfermedades_cronicas': params['enfermedades_cronicas'],
         'enfermedades_hereditarias': params['enfermedades_hereditarias']
     }
+
+
+def format_doctor(params):
+    return {
+        'id_persona': params['id_persona'],
+        'organizacion': params['organizacion'],
+        'cedula': params['cedula'],
+        'horario': params['horario']
+    }
