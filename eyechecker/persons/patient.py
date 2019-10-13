@@ -27,7 +27,7 @@ class Patient(Person):
         """
         return self._table
 
-    @classmethod
+    #@classmethod
     def create(self):
         """
         Method that creates a new patient in the database.
@@ -47,7 +47,7 @@ class Patient(Person):
             transaction.rollback()
             return {'error': "No se puedo crear el paciente"}, 500
 
-    @classmethod
+    #@classmethod
     def delete(self):
         """
         Method that deletes a patient.
@@ -65,7 +65,7 @@ class Patient(Person):
             transaction.rollback()
             return {'error': "No se puedo borrar el paciente"}, 500
 
-    @classmethod
+    #@classmethod
     def update(self):
         """
         Method that updates the information of a patient.

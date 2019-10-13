@@ -24,7 +24,7 @@ class Command:
         """
         return self._status
 
-    @classmethod
+    #@classmethod
     def execute(self, method_name):
         """
         Method that execute a specified method from a class.

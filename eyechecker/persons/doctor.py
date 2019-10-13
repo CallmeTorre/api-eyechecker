@@ -40,7 +40,7 @@ class Doctor(Person):
         """
         return self._account
 
-    @classmethod
+    #@classmethod
     def _create_account(self):
         """
         Private method that creates a new doctor's account.
@@ -56,7 +56,7 @@ class Doctor(Person):
             logging.exception(str(e))
             transaction.rollback()
 
-    @classmethod
+    #@classmethod
     def create(self):
         """
         Method that creates a new doctor in the database.
@@ -77,7 +77,7 @@ class Doctor(Person):
             transaction.rollback()
             return {'error': "No se puedo crear el doctor"}, 500
 
-    @classmethod
+    #@classmethod
     def delete(self):
         """
         Method that deletes a doctor.
@@ -95,7 +95,7 @@ class Doctor(Person):
             transaction.rollback()
             return {'error': "No se puedo borrar el doctor"}, 500
 
-    @classmethod
+    #@classmethod
     def update(self):
         """
         Method that updates the information of a doctor.

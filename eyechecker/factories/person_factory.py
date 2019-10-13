@@ -13,7 +13,7 @@ class PersonFactory(Factory):
     def __init__(self, params):
         self._params = params
 
-    @classmethod
+    #@classmethod
     def load(self, person_type):
         """
         Method that receives a person type and loads its class

@@ -1,3 +1,4 @@
+import logging
 from abc import (ABCMeta,
                  abstractmethod,
                  abstractproperty)
@@ -56,7 +57,7 @@ class Person(metaclass=ABCMeta):
         """
         pass
 
-    @classmethod
+    ##@classmethod
     def _insert_person(self):
         """
         Private method that creates a new person.
