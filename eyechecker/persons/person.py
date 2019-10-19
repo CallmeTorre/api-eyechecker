@@ -95,3 +95,10 @@ class Person(metaclass=ABCMeta):
         Abstract method that defines a patient or doctor update method.
         """
         pass
+
+    @abstractmethod
+    def get(self):
+        """
+        Abstract method that defines a patient or doctor get method.
+        """
+        pass

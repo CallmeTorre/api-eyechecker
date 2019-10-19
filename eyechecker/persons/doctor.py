@@ -112,3 +112,6 @@ class Doctor(Person):
             logging.exception(str(e))
             transaction.rollback()
             return {'error': "No se puedo actualizar el doctor"}, 500
+
+    def get(self):
+        return ":D", 200
