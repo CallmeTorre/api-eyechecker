@@ -27,6 +27,16 @@ class Person(metaclass=ABCMeta):
             self.meta,
             autoload=True,
             autoload_with=self.engine)
+        self._cat_ocupacion = Table(
+            'cat_ocupacion',
+            self.meta,
+            autoload=True,
+            autoload_with=self.engine)
+        self._cat_estado_civil = Table(
+            'cat_estado_civil',
+            self.meta,
+            autoload=True,
+            autoload_with=self.engine)
         self._connection = self.engine.connect()
 
     @property
@@ -49,6 +59,20 @@ class Person(metaclass=ABCMeta):
         Person's table.
         """
         return self._persons
+
+    @property
+    def cat_estado_civil(self):
+        """
+        Estado Civil Catalog.
+        """
+        return self._cat_estado_civil
+
+    @property
+    def cat_ocupacion(self):
+        """
+        Ocupacion Catalog.
+        """
+        return self._cat_ocupacion
 
     @abstractproperty
     def table(self):

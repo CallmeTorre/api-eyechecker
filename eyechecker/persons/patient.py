@@ -146,12 +146,22 @@ class Patient(Person):
         patient_info = self.engine.execute(
                             select([
                                 self.persons,
-                                self.table]).\
+                                self.table,
+                                self.cat_estado_civil.c.tipo.label('estado_civil'),
+                                self.cat_ocupacion.c.ocupacion]).\
                             select_from(self.table.\
                                 outerjoin(
                                     self.persons,
                                     self.persons.c.id ==
-                                    self.table.c.id_persona)).\
+                                    self.table.c.id_persona).\
+                                outerjoin(
+                                    self.cat_ocupacion,
+                                    self.cat_ocupacion.c.id ==
+                                    self.table.c.id_ocupacion).\
+                                outerjoin(
+                                    self.cat_estado_civil,
+                                    self._cat_estado_civil.c.id ==
+                                    self.table.c.id_estado_civil)).\
                             where(self.persons.c.id == self._params['id'])).fetchone()
         return {
             'nombre': patient_info.nombre + " " + patient_info.apellido_paterno + " " + patient_info.apellido_materno,
@@ -160,6 +170,8 @@ class Patient(Person):
             'telefono_celular': patient_info.telefono_celular,
             'genero': patient_info.genero,
             'curp': patient_info.curp,
+            'ocupacion': patient_info.ocupacion,
+            'estado_civil': patient_info.estado_civil,
             'enfermedades_cronicas': patient_info.enfermedades_cronicas,
             'enfermedades_recientes': patient_info.enfermedades_recientes,
             'medicamentos': patient_info.medicamentos,
