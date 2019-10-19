@@ -5,6 +5,7 @@ from sqlalchemy.sql import select
 
 from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import (format_doctor, format_account)
+from eyechecker.utils.notifications import send_recover_email
 
 class Doctor(Person):
     """
@@ -101,6 +102,7 @@ class Doctor(Person):
         """
         Method that updates the information of a doctor.
         """
+        transaction = self._connection.begin()
         try:
             self._connection.execute(
                 self.table.update().\
@@ -137,3 +139,52 @@ class Doctor(Person):
             'cedula': doctor_info.cedula,
             'horario': doctor_info.horario
         }, 200
+
+    def reset_password(self):
+        """
+        Method that reset the password of the account.
+        """
+        transaction = self._connection.begin()
+        user = self._connection.execute(
+                select([self.account.c.id]).\
+                where(self.account.c.usuario == self._params['usuario'])).fetchone()
+        if user != None:
+            try:
+                self._connection.execute(
+                    self.account.update().\
+                    where(self.account.c.usuario == self._params['usuario']).\
+                    values(password=self._params['password']))
+                transaction.commit()
+                return {'status': 'Password actualizado correctamente'}, 200
+            except Exception as e:
+                logging.error("No se pudo reestablecer el password")
+                logging.exception(str(e))
+                transaction.rollback()
+                return {'error': "No se pudo reestablecer el password"}, 500
+        else:
+            return {'error': "Usario no existente"}, 404
+
+    def recover_password(self):
+        """
+        Method that recovers the password for an account.
+        """
+        transaction = self._connection.begin()
+        user = self._connection.execute(
+                select([
+                    self.account.c.id,
+                    self.persons.c.email]).\
+                select_from(self.account.\
+                    outerjoin(
+                        self.table,
+                        self.table.c.id ==
+                        self.account.c.id_doctor).\
+                    outerjoin(
+                        self.persons,
+                        self.persons.c.id ==
+                        self.table.c.id_persona
+                    )).\
+                where(self.account.c.usuario == self._params['usuario'])).fetchone()
+        if user != None:
+            return send_recover_email(user.email)
+        else:
+            return {'error': "Usario no existente"}, 404

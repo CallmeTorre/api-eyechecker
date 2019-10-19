@@ -12,7 +12,10 @@ from configuration.config import load
 load()
 from eyechecker.utils.validation import validate_params
 from eyechecker.utils.command import Command
-from eyechecker.utils.schemas import (patientschema, doctorschema, patientlistschema)
+from eyechecker.utils.schemas import (patientschema,
+                                      doctorschema,
+                                      patientlistschema,
+                                      resetpasswordschema)
 
 application = Flask(__name__)
 
@@ -112,9 +115,37 @@ class PatientListView(MethodView):
             command.status)
 
 
+class ResetDoctorPasswordView(MethodView):
+    """
+    Class that reset the doctor's password.
+    """
+    decorators = [validate_params(resetpasswordschema)]
+    def put(self, params):
+        command = Command(params, 'doctor')
+        command.execute("reset_password")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+
+class RecoverDoctorPasswordView(MethodView):
+    """
+    Class that recover the doctor's password.
+    """
+    decorators = [validate_params(resetpasswordschema)]
+    def post(self, params):
+        command = Command(params, 'doctor')
+        command.execute("recover_password")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
 patient_list_view = PatientListView.as_view('patientlistview')
+reset_doctor_password_view = ResetDoctorPasswordView.as_view('resetdoctorpasswordview')
+recover_doctor_password_view = RecoverDoctorPasswordView.as_view('recoverdoctorpasswordview')
 
 
 application.add_url_rule(
@@ -136,6 +167,20 @@ application.add_url_rule(
     view_func=patient_list_view,
     methods=[
         'GET'
+    ]
+)
+application.add_url_rule(
+    '/account/password/reset',
+    view_func=reset_doctor_password_view,
+    methods=[
+        'PUT'
+    ]
+)
+application.add_url_rule(
+    '/account/password/recover',
+    view_func=recover_doctor_password_view,
+    methods=[
+        'POST'
     ]
 )
 
