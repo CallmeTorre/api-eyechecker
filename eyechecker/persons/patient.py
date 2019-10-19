@@ -1,6 +1,8 @@
 import logging
 
-from sqlalchemy import Table
+from sqlalchemy import Table, cast
+from sqlalchemy.sql import select, and_
+from sqlalchemy.types import String
 
 from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import format_patient
@@ -83,3 +85,56 @@ class Patient(Person):
             logging.exception(str(e))
             transaction.rollback()
             return {'error': "No se puedo actualizar el paciente"}, 500
+
+    def patient_list_filters(self):
+        """
+        Method that creates the filters depending on the params.
+        """
+        filters = []
+        if self._params['nombre'] != 'all':
+            like_string = '%' + self._params['nombre'] + '%'
+            filters.append(self.persons.c.nombre.ilike(like_string))
+            return filters
+
+        if self._params['curp'] != 'all':
+            like_string = '%' + self._params['curp'] + '%'
+            filters.append(self.table.c.curp.ilike(like_string))
+            return filters
+
+        return filters
+
+    def list(self):
+        """
+        Method that list the information of all the patients.
+        """
+        result = []
+        patients_list = self.engine.execute(
+                            select([
+                                self.persons.c.id.label('id_persona'),
+                                self.table.c.id.label('id_paciente'),
+                                self.table.c.curp,
+                                (cast(self.persons.c.nombre, String) + " " + \
+                                 cast(self.persons.c.apellido_paterno, String) + " " + \
+                                 cast(self.persons.c.apellido_materno, String)).label('nombre'),
+                                self.persons.c.fecha_nacimiento,
+                                self.persons.c.telefono_celular,
+                                self.persons.c.email]).\
+                            select_from(self.table.\
+                                outerjoin(
+                                    self.persons,
+                                    self.persons.c.id ==
+                                    self.table.c.id_persona)).\
+                            where(
+                                and_(
+                                    *self.patient_list_filters()))).fetchall()
+        for patient in patients_list:
+            result.append({
+                'id_persona': patient.id_persona,
+                'id_paciente': patient.id_paciente,
+                'nombre': patient.nombre,
+                'curp': patient.curp,
+                'fecha_nacimiento': patient.fecha_nacimiento.strftime("%d-%m-%Y"),
+                'telefono_celular': patient.telefono_celular,
+                'email': patient.email
+            })
+        return {'patient_list': result}, 200
