@@ -68,3 +68,10 @@ patientlistschema = Schema({
     "curp":
         And(Use(str), error="Parámetro 'curp' es inválido"),
 })
+
+resetpasswordschema = Schema({
+    "usuario":
+        And(Use(str), error="Parámetro 'usuario' es inválido"),
+    Optional("password"):
+        And(Use(str), error="Parámetro 'password' es inválido")
+})
