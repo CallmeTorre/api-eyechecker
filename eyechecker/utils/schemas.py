@@ -61,3 +61,10 @@ doctorschema = Schema({
     Optional("password"):
         And(Use(str), error="Parámetro 'password' es inválido")
 })
+
+patientlistschema = Schema({
+    "nombre":
+        And(Use(str), error="Parámetro 'nombre' es inválido"),
+    "curp":
+        And(Use(str), error="Parámetro 'curp' es inválido"),
+})
