@@ -70,6 +70,13 @@ class DoctorView(MethodView):
     """
 
     decorators = [validate_params(doctorschema)]
+    def get(self, params):
+        command = Command(params, 'doctor')
+        command.execute("get")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
     def post(self, params):
         command = Command(params, 'doctor')
         command.execute("create")
@@ -121,7 +128,7 @@ application.add_url_rule(
     '/doctor',
     view_func=doctor_view,
     methods=[
-        'POST', 'DELETE', 'PUT'
+        'GET', 'POST', 'DELETE', 'PUT'
     ]
 )
 application.add_url_rule(
