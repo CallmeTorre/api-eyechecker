@@ -18,7 +18,9 @@ ALWAYS_REQUIRED = {'DATABASE_USER',
                    'DATABASE_HOST',
                    'DATABASE_NAME',
                    'ENV_SELECTOR',
-                   'FLASK_ENV'}
+                   'FLASK_ENV',
+                   'SENDGRID_API_KEY',
+                   'SENDER_EMAIL'}
 
 def _load_env_vars():
     # Load environment variables from envfile if present
