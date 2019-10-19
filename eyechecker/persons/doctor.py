@@ -1,6 +1,7 @@
 import logging
 
 from sqlalchemy import Table
+from sqlalchemy.sql import select
 
 from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import (format_doctor, format_account)
@@ -114,4 +115,25 @@ class Doctor(Person):
             return {'error': "No se puedo actualizar el doctor"}, 500
 
     def get(self):
-        return ":D", 200
+        """
+        Method that retrieves the information of a patient.
+        """
+        doctor_info = self.engine.execute(
+                            select([
+                                self.persons,
+                                self.table]).\
+                            select_from(self.table.\
+                                outerjoin(
+                                    self.persons,
+                                    self.persons.c.id ==
+                                    self.table.c.id_persona)).\
+                            where(self.persons.c.id == self._params['id'])).fetchone()
+        return {
+            'nombre': doctor_info.nombre + " " + doctor_info.apellido_paterno + " " + doctor_info.apellido_materno,
+            'email': doctor_info.email,
+            'telefono_celular': doctor_info.telefono_celular,
+            'genero': doctor_info.genero,
+            'organizacion': doctor_info.organizacion,
+            'cedula': doctor_info.cedula,
+            'horario': doctor_info.horario
+        }, 200
