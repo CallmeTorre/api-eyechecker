@@ -12,7 +12,7 @@ from configuration.config import load
 load()
 from eyechecker.utils.validation import validate_params
 from eyechecker.utils.command import Command
-from eyechecker.utils.schemas import (patientschema, doctorschema)
+from eyechecker.utils.schemas import (patientschema, doctorschema, patientlistschema)
 
 application = Flask(__name__)
 
@@ -86,8 +86,22 @@ class DoctorView(MethodView):
             command.status)
 
 
+class PatientListView(MethodView):
+    """
+    Class that list all the patients
+    """
+    decorators = [validate_params(patientlistschema)]
+    def get(self, params):
+        command = Command(params, 'patient')
+        command.execute("list")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
+patient_list_view = PatientListView.as_view('patientlistview')
 
 
 application.add_url_rule(
@@ -102,6 +116,13 @@ application.add_url_rule(
     view_func=doctor_view,
     methods=[
         'POST', 'DELETE', 'PUT'
+    ]
+)
+application.add_url_rule(
+    '/patient/list',
+    view_func=patient_list_view,
+    methods=[
+        'GET'
     ]
 )
 
