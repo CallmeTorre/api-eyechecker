@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import Table, cast
+from sqlalchemy import Table, cast, desc
 from sqlalchemy.sql import select, and_
 from sqlalchemy.types import String
 
@@ -126,7 +126,8 @@ class Patient(Person):
                                     self.table.c.id_persona)).\
                             where(
                                 and_(
-                                    *self.patient_list_filters()))).fetchall()
+                                    *self.patient_list_filters())).\
+                            order_by(desc('nombre'))).fetchall()
         for patient in patients_list:
             result.append({
                 'id_persona': patient.id_persona,
