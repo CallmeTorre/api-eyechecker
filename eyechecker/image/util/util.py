@@ -1,5 +1,6 @@
 from skimage import io
 from skimage.transform import resize
+from skimage.viewer import ImageViewer
 
 
 def open_image(url: str):
@@ -16,7 +17,12 @@ def get_green_channel(rgb_image):
 
 def scale_image(image, normalized_height, normalized_width):
     # TODO: Check resize(preserve_range=False) argument
-    width, height = image.shape
+    width, height, _ = image.shape
     if height != normalized_height or width != normalized_width:
         image = resize(image, (normalized_height, normalized_width))
     return image
+
+
+def view_image(image):
+    viewer = ImageViewer(image)
+    viewer.show()

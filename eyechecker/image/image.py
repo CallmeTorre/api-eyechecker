@@ -1,13 +1,12 @@
-from io.file import *
-
-from image.feature.border import detect_borders
-from image.feature.exposure import enhance_histogram
-from image.util import util
+from feature.border import detect_borders
+from feature.exposure import enhance_histogram
+from util import util
 
 
 # TODO: Create the sklearn module
 #           Put the pickles in the module
-#
+#           Erase skimage (added only for testing)
+
 class Image:
     g_height = 1152
     g_width = 1500
@@ -22,6 +21,11 @@ class Image:
         green_channel = util.get_green_channel(self.image)
         enhanced_image = enhance_histogram.equalize_adapthist(green_channel)
         border_image = detect_borders.canny(enhanced_image)
+        util.view_image(border_image)
 
     def get_hardexudates(self):
         pass
+
+
+test = Image("images/bimg.jpg")
+test.get_microaneurysm()
