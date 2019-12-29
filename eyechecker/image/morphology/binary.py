@@ -50,5 +50,4 @@ def opening(DATA):
 
 
 def opening2(DATA):
-    print("THJIS IS DSAFDS")
     return ndi.binary_opening(DATA, structure=disk(3))
