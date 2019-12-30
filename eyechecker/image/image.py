@@ -1,4 +1,4 @@
-from classifier.extraction import region, distinction
+from classifier.extraction import region
 from classifier.model import classify
 from feature.border import detect_borders
 from feature.exposure import enhance_histogram
@@ -42,10 +42,13 @@ class Image:
         micro_and_hemo_and_boders = binary.fill_holes(border_image)
         micro_and_hemo = binary.opening(micro_and_hemo_and_boders)
         points_of_interest = region.get_coordinates_of_the_regions(micro_and_hemo)
-        possible_micro, possible_hemo = distinction.distinct_between_ma_ha(points_of_interest)
-        real_micro = classify.classifyMA(possible_micro)
+
+        # possible_micro, possible_hemo = distinction.distinct_between_ma_ha(points_of_interest)
+        green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)
+
+        real_micro = classify.classifyMA(green_values_of_points)
         # paint_lession(real_micro)
-        util.view_image(micro_and_hemo)
+        # util.view_image(micro_and_hemo)
 
     def get_hardexudate(self):
         pass

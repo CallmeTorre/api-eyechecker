@@ -1,18 +1,34 @@
+from classifier.characteristic import stadistical
 from sklearn.externals import joblib
 
 
-def classifyMA(binary_img):
-    # Get the values from the green channel
-    green_channel_values = map_coordinates_to_values()
+def classifyMA(green_channel_lessions):
     # Get all the stadistical features of each reagion
-    lession_stadistical_features = calculate_features(green_channel_values)
+    stadistical_lessions = []
+    for lession in green_channel_lessions:
+        stadistical_lessions.append(_get_stadistical_features(lession))
 
-    # Use the classifier and classsify
-    ma_model = _load_trained_model("./trained/ma.joblib")
-    predicted_ma = ma_model.predict(lession_stadistical_features)
+    # TODO Check how this is going to perfom in the server
+    ma_model = _load_trained_model("classifier/model/trained/ma.joblib")
+    predicted_ma = ma_model.predict(stadistical_lessions)
     return predicted_ma
 
 
 def _load_trained_model(model):
     # Put this in a dictionary
     return joblib.load(model)
+
+
+def _get_stadistical_features(region):
+    mean = stadistical.calMean(region)
+    standard = stadistical.calStan(region)
+    smooth = stadistical.calSmoot(standard)
+    skewness = stadistical.csk(region, mean, standard)
+    kurt = stadistical.kurtosis(region, mean, standard)
+    return [
+        mean,
+        standard,
+        smooth,
+        skewness,
+        kurt
+    ]

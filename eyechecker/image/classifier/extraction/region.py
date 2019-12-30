@@ -9,3 +9,14 @@ def get_coordinates_of_the_regions(binary_img):
     non_zero_vals = segmented_img_with_regions[lesions[0], lesions[1]]
     coords_of_each_lesion = {k: coords[non_zero_vals == k] for k in range(1, num_regions + 1)}
     return coords_of_each_lesion
+
+
+def get_green_values_from_coordinates(coordinates, green_channel):
+    # TODO  Create numpy array instead of normal array
+    lesions = []
+    for coordinate in coordinates.values():
+        green_values_of_lessions = []
+        for x, y in coordinate:
+            green_values_of_lessions.append(green_channel[x][y])
+        lesions.append(green_values_of_lessions)
+    return lesions
