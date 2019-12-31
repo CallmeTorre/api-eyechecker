@@ -1,14 +1,3 @@
-"""
-canny.py - Canny Edge detector
-Reference: Canny, J., A Computational Approach To Edge Detection, IEEE Trans.
-    Pattern Analysis and Machine Intelligence, 8:679-714, 1986
-Originally part of CellProfiler, code licensed under both GPL and BSD licenses.
-Website: http://www.cellprofiler.org
-Copyright (c) 2003-2009 Massachusetts Institute of Technology
-Copyright (c) 2009-2011 Broad Institute
-All rights reserved.
-Original author: Lee Kamentsky
-"""
 import numpy as np
 import scipy.ndimage as ndi
 import skimage
@@ -16,56 +5,7 @@ import skimage.io
 from scipy.ndimage import generate_binary_structure, binary_erosion, label
 
 
-def canny(image, sigma=1., low_threshold=None, high_threshold=None, mask=None, use_quantiles=False):
-    """Edge filter an image using the Canny algorithm.
-    Parameters
-    -----------
-    image : 2D array
-        Grayscale input image to detect edges on; can be of any dtype.
-    sigma : float, optional
-        Standard deviation of the Gaussian filter.
-    low_threshold : float, optional
-        Lower bound for hysteresis thresholding (linking edges).
-        If None, low_threshold is set to 10% of dtype's max.
-    high_threshold : float, optional
-        Upper bound for hysteresis thresholding (linking edges).
-        If None, high_threshold is set to 20% of dtype's max.
-    mask : array, dtype=bool, optional
-        Mask to limit the application of Canny to a certain area.
-    use_quantiles : bool, optional
-        If True then treat low_threshold and high_threshold as quantiles of the
-        edge magnitude image, rather than absolute edge magnitude values. If True
-        then the thresholds must be in the range [0, 1].
-    Returns
-    -------
-    output : 2D array (image)
-        The binary edge map.
-    Notes
-    -----
-    The steps of the algorithm are as follows:
-    * Smooth the image using a Gaussian with ``sigma`` width.
-    * Apply the horizontal and vertical Sobel operators to get the gradients
-      within the image. The edge strength is the norm of the gradient.
-    * Thin potential edges to 1-pixel wide curves. First, find the normal
-      to the edge at each point. This is done by looking at the
-      signs and the relative magnitude of the X-Sobel and Y-Sobel
-      to sort the points into 4 categories: horizontal, vertical,
-      diagonal and antidiagonal. Then look in the normal and reverse
-      directions to see if the values in either of those directions are
-      greater than the point in question. Use interpolation to get a mix of
-      points instead of picking the one that's the closest to the normal.
-    * Perform a hysteresis thresholding: first label all points above the
-      high threshold as edges. Then recursively label any point above the
-      low threshold that is 8-connected to a labeled point as an edge.
-    References
-    -----------
-    .. [1] Canny, J., A Computational Approach To Edge Detection, IEEE Trans.
-           Pattern Analysis and Machine Intelligence, 8:679-714, 1986
-           :DOI:`10.1109/TPAMI.1986.4767851`
-    .. [2] William Green's Canny tutorial
-           http://dasl.unlv.edu/daslDrexel/alumni/bGreen/www.pages.drexel.edu/_weg22/can_tut.html
-    """
-
+def canny(img, sigma=1., low_threshold=None, high_threshold=None, mask=None, use_quantiles=False):
     #
     # The steps involved:
     #
@@ -110,9 +50,9 @@ def canny(image, sigma=1., low_threshold=None, high_threshold=None, mask=None, u
         high_threshold = high_threshold / dtype_max
 
     if mask is None:
-        mask = np.ones(image.shape, dtype=bool)
+        mask = np.ones(img.shape, dtype=bool)
 
-    smoothed = ndi.gaussian_filter(skimage.img_as_float(image), sigma, mode='constant', cval=0, truncate=4.0)
+    smoothed = ndi.gaussian_filter(skimage.img_as_float(img), sigma, mode='constant', cval=0, truncate=4.0)
     jsobel = ndi.sobel(smoothed, axis=1)
     isobel = ndi.sobel(smoothed, axis=0)
     abs_isobel = np.abs(isobel)  # Calculate the absolute value element-wise. |-a| = a
@@ -131,7 +71,7 @@ def canny(image, sigma=1., low_threshold=None, high_threshold=None, mask=None, u
     #
     # --------- Find local maxima --------------
     # Assign each point to have a normal of 0-45 degrees, 45-90 degrees,90-135 degrees and 135-180 degrees.
-    local_maxima = np.zeros(image.shape, bool)
+    local_maxima = np.zeros(img.shape, bool)
     # ----- 0 to 45 degrees ------
     pts_plus = (isobel >= 0) & (jsobel >= 0) & (abs_isobel >= abs_jsobel)
     pts_minus = (isobel <= 0) & (jsobel <= 0) & (abs_isobel >= abs_jsobel)
