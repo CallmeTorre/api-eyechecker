@@ -1,7 +1,7 @@
 from classifier.extraction import region
 from classifier.model import classify
 from feature.border import detect_borders
-from feature.exposure import enhance_histogram
+from feature.exposure import enhance_histogram, threshold
 from morphology import binary
 from util import util
 
@@ -15,7 +15,7 @@ from util import util
 #           Check how to return each image (float or unit)
 #           Check the types of data that we're creating in the modules (int or float)
 #           Create the unit test for Morphologhy code
-#           Check if we should use FloodFills or skimage in region.py
+#           Check if we should use FloodFills or skimage in region.py (CHECK THE TYPE OF CONNECTED PIXELS)
 #           Create a decorator to handle exceptions
 #           Check edge cases (None)
 #           Check the new circle area for distinction.distinct_between_ma_ha
@@ -57,12 +57,22 @@ class Image:
 
     def get_hardexudate(self):
         green_channel = util.get_green_channel(self.img)
-        enhanced_img = enhance_histogram.equalize_adapthist(green_channel)
+        enhanced_img = enhance_histogram.equalize_adapthist(green_channel, clip_limit=0.05)
+        bright_regions = threshold.get_bright_regions(enhanced_img)
+        points_of_interest = region.get_coordinates_of_the_regions(bright_regions)
+        green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)
+        real_he = classify.classify(green_values_of_points, "he")
+
+        ###################
+        # util.view_image(enhanced_img)
+        # util.view_image(bright_regions)
+        ###################
 
         pass
 
 
-# test = Image("images/bimg.jpg")
-test = Image("images/timg.png")
+test = Image("images/bimg.jpg")
+# test = Image("images/timg.png")
 
-test.get_microaneurysms_and_hemorrhages()
+# test.get_microaneurysms_and_hemorrhages()
+test.get_hardexudate()
