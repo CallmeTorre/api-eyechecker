@@ -1,5 +1,6 @@
 import numpy as np
 from skimage import io
+from skimage.draw import set_color
 from skimage.transform import resize
 from skimage.viewer import ImageViewer
 
@@ -24,17 +25,14 @@ def scale_image(img, normalized_height: int, normalized_width: int):
 
 def paint_lesions(img, lesions, coordinates):
     # It paints the lesion in the original image
-    binary_img = np.zeros((1152, 1500), dtype=int)
+    copy_img = np.copy(img)
+    print(coordinates)
     for i, l in enumerate(lesions):
         if l == 1:
             topaint = coordinates[i]
             for x, y in topaint:
-                binary_img[x][y] = 1
-    """
-    rr, cc = polygon_perimeter(lesions, shape=img.shape, clip=True)
-    img[rr, cc] = 1
-    """
-    return binary_img.astype(bool)
+                set_color(copy_img, (x, y), (255, 8, 0))
+    return copy_img
 
 
 def view_image(image):

@@ -1,7 +1,8 @@
+from classifier.characteristic import distinction
 from classifier.extraction import region
 from classifier.model import classify
 from feature.border import detect_borders
-from feature.exposure import enhance_histogram, threshold
+from feature.exposure import enhance_histogram
 from morphology import binary
 from util import util
 
@@ -43,33 +44,36 @@ class Image:
         micro_hemo_and_borders = binary.fill_holes(border_img)
         micro_and_hemo = binary.remove_border(micro_hemo_and_borders, border_img)
         micro_and_hemo = binary.opening(micro_and_hemo)
-
         points_of_interest = region.get_coordinates_of_the_regions(micro_and_hemo)
-        # possible_micro, possible_hemo = distinction.distinct_between_ma_ha(points_of_interest)
-        green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)
+        possible_micro, possible_hemo = distinction.distinct_between_ma_ha(points_of_interest)
 
-        real_micro = classify.classify(green_values_of_points, "ma")
-        self.ma_img = util.paint_lesions(self.img, real_micro, points_of_interest)
+        green_values_of_micro_points = region.get_green_values_from_coordinates(possible_micro, green_channel)
+        green_values_of_hemo_points = region.get_green_values_from_coordinates(possible_hemo, green_channel)
+
+        real_micro = classify.classify(green_values_of_micro_points, "ma")
+        real_hemo = classify.classify(green_values_of_hemo_points, "hr")
+
+        self.ma_img = util.paint_lesions(self.img, real_micro, possible_micro)
+        self.hr_img = util.paint_lesions(self.img, real_hemo, possible_hemo)
 
         ###################
-        #util.view_image(micro_and_hemo)
         util.view_image(self.ma_img)
+        util.view_image(self.hr_img)
         ###################
 
     def get_hardexudate(self):
         green_channel = util.get_green_channel(self.img)
         enhanced_img = enhance_histogram.equalize_adapthist(green_channel, clip_limit=0.05)
-        bright_regions = threshold.get_bright_regions(enhanced_img)
+        new_img, bright_regions = threshold.get_bright_regions(enhanced_img)
+
         points_of_interest = region.get_coordinates_of_the_regions(bright_regions)
         green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)
         real_he = classify.classify(green_values_of_points, "he")
+        self.he_img = util.paint_lesions(self.img, real_he, points_of_interest)
 
         ###################
-        # util.view_image(enhanced_img)
-        # util.view_image(bright_regions)
+        # util.view_image(self.he_img)
         ###################
-
-        pass
 
 
 # test = Image("images/bimg.jpg")
