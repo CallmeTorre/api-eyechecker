@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.ndimage import label
+from skimage.util import img_as_ubyte
 
 
 def get_coordinates_of_the_regions(binary_img):
@@ -14,6 +15,7 @@ def get_coordinates_of_the_regions(binary_img):
 def get_green_values_from_coordinates(coordinates, green_channel):
     # TODO  Create numpy array instead of normal array
     lesions = []
+    green_channel = img_as_ubyte(green_channel)
     for coordinate in coordinates.values():
         green_values_of_lessions = []
         for x, y in coordinate:

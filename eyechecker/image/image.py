@@ -49,10 +49,11 @@ class Image:
         green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)
 
         real_micro = classify.classify(green_values_of_points, "ma")
-        self.ma_img = util.paint_lesions(self.img, real_micro)
+        self.ma_img = util.paint_lesions(self.img, real_micro, points_of_interest)
 
         ###################
-        # util.view_image(micro_and_hemo)
+        #util.view_image(micro_and_hemo)
+        util.view_image(self.ma_img)
         ###################
 
     def get_hardexudate(self):
@@ -71,8 +72,8 @@ class Image:
         pass
 
 
-test = Image("images/bimg.jpg")
-# test = Image("images/timg.png")
+# test = Image("images/bimg.jpg")
+test = Image("images/timg.png")
 
-# test.get_microaneurysms_and_hemorrhages()
-test.get_hardexudate()
+test.get_microaneurysms_and_hemorrhages()
+# test.get_hardexudate()

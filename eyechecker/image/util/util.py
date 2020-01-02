@@ -1,3 +1,4 @@
+import numpy as np
 from skimage import io
 from skimage.transform import resize
 from skimage.viewer import ImageViewer
@@ -21,20 +22,22 @@ def scale_image(img, normalized_height: int, normalized_width: int):
     return img
 
 
-def view_image(image):
-    # IO helper method to visualize the image
-    viewer = ImageViewer(image)
-    viewer.show()
-
-
-def paint_lesions(img, lesions):
+def paint_lesions(img, lesions, coordinates):
     # It paints the lesion in the original image
-    for l in lesions:
+    binary_img = np.zeros((1152, 1500), dtype=int)
+    for i, l in enumerate(lesions):
         if l == 1:
-            print("Something")
-    print("Finished")
+            topaint = coordinates[i]
+            for x, y in topaint:
+                binary_img[x][y] = 1
     """
     rr, cc = polygon_perimeter(lesions, shape=img.shape, clip=True)
     img[rr, cc] = 1
     """
-    return img
+    return binary_img.astype(bool)
+
+
+def view_image(image):
+    # IO helper method to visualize the image
+    viewer = ImageViewer(image)
+    viewer.show()
