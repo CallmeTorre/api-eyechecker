@@ -15,7 +15,8 @@ from eyechecker.utils.command import Command
 from eyechecker.utils.schemas import (patientschema,
                                       doctorschema,
                                       patientlistschema,
-                                      resetpasswordschema)
+                                      resetpasswordschema,
+                                      analysisschema)
 
 application = Flask(__name__)
 
@@ -129,7 +130,7 @@ class ResetDoctorPasswordView(MethodView):
 
 
 class RecoverDoctorPasswordView(MethodView):
-    """
+    """º
     Class that recover the doctor's password.
     """
     decorators = [validate_params(resetpasswordschema)]
@@ -141,12 +142,24 @@ class RecoverDoctorPasswordView(MethodView):
             command.status)
 
 
+class NewPatientAnalysis(MethodView):
+    """
+    Class that creates a new analysis
+    """
+    decorators = [validate_params(analysisschema)]
+    def post(self, params):
+        print(params)
+        return make_response(
+            ":D",
+            200
+        )
+
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
 patient_list_view = PatientListView.as_view('patientlistview')
 reset_doctor_password_view = ResetDoctorPasswordView.as_view('resetdoctorpasswordview')
 recover_doctor_password_view = RecoverDoctorPasswordView.as_view('recoverdoctorpasswordview')
-
+new_patient_analysis = NewPatientAnalysis.as_view('newpatientanalysis')
 
 application.add_url_rule(
     '/patient',
@@ -183,7 +196,13 @@ application.add_url_rule(
         'POST'
     ]
 )
-
+application.add_url_rule(
+    '/patient/analysis',
+    view_func=new_patient_analysis,
+    methods=[
+        'POST'
+    ]
+)
 
 @application.errorhandler(500)
 def internal_error(error):

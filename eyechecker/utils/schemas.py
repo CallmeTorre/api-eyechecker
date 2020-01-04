@@ -75,3 +75,8 @@ resetpasswordschema = Schema({
     Optional("password"):
         And(Use(str), error="Parámetro 'password' es inválido")
 })
+
+analysisschema = Schema({
+    "id":
+        And(Use(str), error="Parámetro 'id' es inválido")
+}, ignore_extra_keys=True)
