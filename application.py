@@ -130,7 +130,7 @@ class ResetDoctorPasswordView(MethodView):
 
 
 class RecoverDoctorPasswordView(MethodView):
-    """º
+    """
     Class that recover the doctor's password.
     """
     decorators = [validate_params(resetpasswordschema)]
