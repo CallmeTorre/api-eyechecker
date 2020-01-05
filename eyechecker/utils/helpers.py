@@ -5,6 +5,10 @@ from pathlib import Path
 from werkzeug.utils import secure_filename
 
 def save_temp_image(image):
+    """
+    Function that receives an image as a FileStorage Class and
+    saves it in a temporary folder.
+    """
     image_filename = secure_filename(image.filename)
     current_path = Path(getcwd())
     temp_image_path = path.join(current_path, 'eyechecker', 'image', 'images', image_filename)
