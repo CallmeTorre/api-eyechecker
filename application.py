@@ -148,11 +148,11 @@ class NewPatientAnalysis(MethodView):
     """
     decorators = [validate_params(analysisschema)]
     def post(self, params):
-        print(params)
+        command = Command(params, 'patient')
+        command.execute("new_analysis")
         return make_response(
-            ":D",
-            200
-        )
+            jsonify(command.result),
+            command.status)
 
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
