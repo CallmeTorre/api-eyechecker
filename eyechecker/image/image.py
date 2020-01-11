@@ -1,10 +1,10 @@
-from classifier.characteristic import distinction
-from classifier.extraction import region
-from classifier.model import classify
-from feature.border import detect_borders
-from feature.exposure import enhance_histogram
-from morphology import binary
-from util import util
+from eyechecker.image.classifier.characteristic import distinction
+from eyechecker.image.classifier.extraction import region
+from eyechecker.image.classifier.model import classify
+from eyechecker.image.feature.border import detect_borders
+from eyechecker.image.feature.exposure import enhance_histogram
+from eyechecker.image.morphology import binary
+from eyechecker.image.util import util
 
 
 # TODO: Create the sklearn module
@@ -77,7 +77,7 @@ class Image:
 
 
 # test = Image("images/bimg.jpg")
-test = Image("images/timg.png")
+#test = Image("images/timg.png")
 
-test.get_microaneurysms_and_hemorrhages()
+#test.get_microaneurysms_and_hemorrhages()
 # test.get_hardexudate()
