@@ -1,11 +1,11 @@
 import numpy as np
-from classifier.characteristic import stadistical
+from eyechecker.image.classifier.characteristic import stadistical
 from sklearn.externals import joblib
 
 trained_models = {
-    "ma": "classifier/model/trained/ma.joblib",
-    "he": "classifier/model/trained/he.joblib",
-    "hr": "classifier/model/trained/hr.joblib"
+    "ma": "/Users/Callmetorre/Documents/api-eyechecker/eyechecker/image/classifier/model/trained/ma.joblib",
+    "he": "/Users/Callmetorre/Documents/api-eyechecker/eyechecker/image/classifier/model/trained/he.joblib",
+    "hr": "/Users/Callmetorre/Documents/api-eyechecker/eyechecker/image/classifier/model/trained/hr.joblib"
 }
 
 

@@ -7,6 +7,7 @@ from sqlalchemy.types import String
 from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import format_patient
 from eyechecker.utils.helpers import save_temp_image
+from eyechecker.image.image import Image
 
 class Patient(Person):
     """
@@ -185,7 +186,15 @@ class Patient(Person):
         Method that receives the patient eye image(s) and create the analysis.
         """
         if('left_eye' in self._params):
-            left_eye_name = save_temp_image(self._params['left_eye'])
+            left_eye_path = save_temp_image(self._params['left_eye'])
+            if(left_eye_path):
+                left_eye = Image(left_eye_path)
+                left_eye.get_microaneurysms_and_hemorrhages()
+                left_eye.get_hardexudate()
         if('right_eye' in self._params):
-            right_eye_name = save_temp_image(self._params['right_eye'])
+            right_eye_path = save_temp_image(self._params['right_eye'])
+            if(right_eye_path):
+                rigth_eye = Image(right_eye_path)
+                rigth_eye.get_microaneurysms_and_hemorrhages()
+                right_eye.get_hardexudate()
         return ":D", 200

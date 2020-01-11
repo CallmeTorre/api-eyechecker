@@ -16,7 +16,7 @@ def save_temp_image(image):
         logging.info("Guardando imagen")
         image.save(temp_image_path)
         logging.info("Imagen %s ha sido guardada" % image_filename)
-        return image_filename
+        return temp_image_path
     except Exception as e:
         logging.error("No se pudo guardar la imagen")
         logging.error(e)
