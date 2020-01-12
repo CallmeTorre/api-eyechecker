@@ -29,12 +29,11 @@ def scale_image(img, normalized_height: int, normalized_width: int):
 def paint_lesions(img, lesions, coordinates):
     # It paints the lesion in the original image
     copy_img = np.copy(img)
-    print(coordinates)
     for i, l in enumerate(lesions):
         if l == 1:
             topaint = coordinates[i]
             for x, y in topaint:
-                set_color(copy_img, (x, y), (255, 8, 0))
+                set_color(copy_img, (x, y), (1, 0.8, 0))
     return copy_img
 
 
