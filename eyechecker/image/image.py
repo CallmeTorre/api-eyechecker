@@ -2,10 +2,9 @@ from eyechecker.image.classifier.characteristic import distinction
 from eyechecker.image.classifier.extraction import region
 from eyechecker.image.classifier.model import classify
 from eyechecker.image.feature.border import detect_borders
-from eyechecker.image.feature.exposure import enhance_histogram
+from eyechecker.image.feature.exposure import enhance_histogram, threshold
 from eyechecker.image.morphology import binary
 from eyechecker.image.util import util
-
 
 # TODO: Create the sklearn module
 #           Check the type of value that you return after the cropping the image
@@ -56,15 +55,18 @@ class Image:
         self.ma_img = util.paint_lesions(self.img, real_micro, possible_micro)
         self.hr_img = util.paint_lesions(self.img, real_hemo, possible_hemo)
 
+        return util.save_image("imagen_final", self.ma_img), util.save_image("imagen_final_2", self.hr_img)
+
         ###################
-        util.view_image(self.ma_img)
-        util.view_image(self.hr_img)
+        #util.view_image(self.ma_img)
+        #util.view_image(self.hr_img)
         ###################
 
     def get_hardexudate(self):
         green_channel = util.get_green_channel(self.img)
         enhanced_img = enhance_histogram.equalize_adapthist(green_channel, clip_limit=0.05)
-        new_img, bright_regions = threshold.get_bright_regions(enhanced_img)
+        bright_regions = threshold.get_bright_regions(enhanced_img)
+
 
         points_of_interest = region.get_coordinates_of_the_regions(bright_regions)
         green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)

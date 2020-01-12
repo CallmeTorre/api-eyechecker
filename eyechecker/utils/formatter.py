@@ -50,3 +50,10 @@ def format_account(params):
         'usuario': params['usuario'],
         'password': params['password']
     }
+
+
+def format_eye_analysis(eye_key, micros, hemorrhages):
+    return {
+        eye_key: {
+            'micros': micros, 
+            'hemorrhages':hemorrhages}}
