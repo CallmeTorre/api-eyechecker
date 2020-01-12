@@ -1,8 +1,11 @@
+from os import getcwd, path
+from pathlib import Path
+
 import numpy as np
 from skimage import io
 from skimage.draw import set_color
 from skimage.transform import resize
-from skimage.viewer import ImageViewer
+#from skimage.viewer import ImageViewer
 
 
 def open_image(url: str):
@@ -35,7 +38,14 @@ def paint_lesions(img, lesions, coordinates):
     return copy_img
 
 
-def view_image(image):
+def save_image(filename, image):
+    current_path = Path(getcwd())
+    image_path = path.join(current_path, 'eyechecker', 'image', 'images', filename + '.png')
+    io.imsave(image_path, image)
+    return image_path
+
+
+#def view_image(image):
     # IO helper method to visualize the image
-    viewer = ImageViewer(image)
-    viewer.show()
+#    viewer = ImageViewer(image)
+#    viewer.show()
