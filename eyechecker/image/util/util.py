@@ -17,6 +17,9 @@ def get_green_channel(rgb_image):
     # RGB values, each pixel is stored as 8-bit 3-channel color images (0 to 255)
     return rgb_image[:, :, 1]
 
+def get_HSV_channel(rgb_image):
+    hsv_img = rgb2hsv(rgb_image)
+    return hsv_img[:, :, 0]
 
 def scale_image(img, normalized_height: int, normalized_width: int):
     # Scales the image to (normalized_height, normalized_width) when necessary

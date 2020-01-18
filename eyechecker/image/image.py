@@ -64,14 +64,16 @@ class Image:
 
     def get_hardexudate(self):
         green_channel = util.get_green_channel(self.img)
-        enhanced_img = enhance_histogram.equalize_adapthist(green_channel, clip_limit=0.05)
-        bright_regions = threshold.get_bright_regions(enhanced_img)
-
-
+        hsv_channel = util.get_HSV_channel(self.img)
+        bright_regions = threshold.get_bright_regions(hsv_channel, green_channel)
         points_of_interest = region.get_coordinates_of_the_regions(bright_regions)
-        green_values_of_points = region.get_green_values_from_coordinates(points_of_interest, green_channel)
+        possible_hard_exu = distinction.distinct_betwen_disc_and_exudate(points_of_interest)
+
+        green_values_of_points = region.get_green_values_from_coordinates(possible_hard_exu, green_channel)
+
         real_he = classify.classify(green_values_of_points, "he")
-        self.he_img = util.paint_lesions(self.img, real_he, points_of_interest)
+
+        self.he_img = util.paint_lesions(self.img, real_he, possible_hard_exu)
 
         ###################
         # util.view_image(self.he_img)

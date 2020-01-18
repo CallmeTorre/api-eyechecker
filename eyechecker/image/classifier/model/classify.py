@@ -16,6 +16,8 @@ def classify(green_values_of_lesions, type):
         statistical_features_of_lesions.append(_get_statistical_features(lesion))
 
     non_null_data = _clean_data(statistical_features_of_lesions)
+    if not len(non_null_data):
+        return []
     model = _load_trained_model(trained_models[type])
     predicted = model.predict(non_null_data)
     return predicted
