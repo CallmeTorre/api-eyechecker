@@ -16,7 +16,7 @@ def get_bright_regions(img, green_channel):
             green_value = green_channel_u[row][col]
             if green_value <= 35:
                 continue
-            if hue_val >= 0.045 and hue_val < 0.14:
+            if hue_val >= 0.045 and hue_val < 0.15:
                 look_val_z = look_up_table_z[hue_val]
                 if look_val_z >= 2.0:
                     imagen_to_be_colored[row][col] = 1
