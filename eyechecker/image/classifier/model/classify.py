@@ -1,19 +1,23 @@
+from os import getcwd, path
+from pathlib import Path
+
 import numpy as np
-from classifier.characteristic import stadistical
 from sklearn.externals import joblib
+
+from eyechecker.image.classifier.characteristic import stadistical
 
 def classify(green_values_of_lesions, type):
     trained_models = {
-        "ma": "classifier/model/trained/ma.joblib",
-        "he": "classifier/model/trained/he.joblib",
-        "hr": "classifier/model/trained/hr.joblib"
+        "ma": "ma.joblib",
+        "he": "he.joblib",
+        "hr": "hr.joblib"
     }
-    
+
     # Get all the statistical features of each region
     statistical_features_of_lesions = []
     for lesion in green_values_of_lesions:
         statistical_features_of_lesions.append(_get_statistical_features(lesion))
-        
+
     statistical_features_of_lesions =  np.asarray(statistical_features_of_lesions)
 
     non_null_data = _clean_data(statistical_features_of_lesions)
@@ -25,7 +29,9 @@ def classify(green_values_of_lesions, type):
 
 
 def _load_trained_model(model):
-    return joblib.load(model)
+    current_path = Path(getcwd())
+    model_path = path.join(current_path, 'eyechecker', 'image', 'classifier', 'model', 'trained', model)
+    return joblib.load(model_path)
 
 
 def _get_statistical_features(region):

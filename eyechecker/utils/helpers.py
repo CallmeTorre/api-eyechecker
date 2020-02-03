@@ -32,6 +32,7 @@ def image_analysis(eye_key, params):
         if(eye_path):
             eye_class = Image(eye_path)
             eye_micros, eye_hemorrhages = eye_class.get_microaneurysms_and_hemorrhages()
-            return format_eye_analysis(eye_key, eye_micros, eye_hemorrhages)
+            eye_exudates = eye_class.get_hardexudate()
+            return format_eye_analysis(eye_key, eye_micros, eye_hemorrhages, eye_exudates)
     else:
-        return {}
+        return {'eye_key':{}}

@@ -52,8 +52,9 @@ def format_account(params):
     }
 
 
-def format_eye_analysis(eye_key, micros, hemorrhages):
+def format_eye_analysis(eye_key, micros, hemorrhages, exudates):
     return {
         eye_key: {
-            'micros': micros, 
-            'hemorrhages':hemorrhages}}
+            'micros': micros,
+            'hemorrhages':hemorrhages,
+            'exudates': exudates}}

@@ -67,12 +67,12 @@ class Image:
         hsv_channel = util.get_HSV_channel(self.img)
         bright_regions = threshold.get_bright_regions(hsv_channel, green_channel)
 
-        points_of_interest = region.get_coordinates_of_the_regions(bright_regions)        
+        points_of_interest = region.get_coordinates_of_the_regions(bright_regions)
         possible_hard_exu = distinction.distinct_betwen_disc_and_exudate(points_of_interest)
         green_values_of_points = region.get_green_values_from_coordinates(possible_hard_exu, green_channel)
-        
+
         real_he = classify.classify(green_values_of_points, "he")
-        
+
         self.he_img = util.paint_lesions(self.img, real_he, possible_hard_exu)
         return util.save_image("imagen_final_3", self.he_img)
 
