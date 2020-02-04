@@ -5,6 +5,7 @@ import numpy as np
 from skimage import io
 from skimage.draw import set_color
 from skimage.transform import resize
+from skimage.color import rgb2hsv
 #from skimage.viewer import ImageViewer
 
 

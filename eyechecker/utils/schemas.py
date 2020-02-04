@@ -1,82 +1,95 @@
+from datetime import datetime
+
 from schema import Schema, Or, Use, And, Optional
 
 patientschema = Schema({
     Optional("id"):
-        And(Use(str), error="Parámetro 'id' es inválido"),
+        Use(str, error="Parámetro 'id' es inválido"),
     Optional("nombre"):
-        And(Use(str), error="Parámetro 'nombre' es inválido"),
+        Use(str, error="Parámetro 'nombre' es inválido"),
     Optional("apellido_paterno"):
-        And(Use(str), error="Parámetro 'apellido_paterno' es inválido"),
+        Use(str, error="Parámetro 'apellido_paterno' es inválido"),
     Optional("apellido_materno"):
-        And(Use(str), error="Parámetro 'apellido_materno' es inválido"),
+        Use(str, error="Parámetro 'apellido_materno' es inválido"),
     Optional("fecha_nacimiento"):
-        And(Use(str), error="Parámetro 'fecha_nacimiento' es inválido"),
+        Use(str, error="Parámetro 'fecha_nacimiento' es inválido"),
     Optional("email"):
-        And(Use(str), error="Parámetro 'email' es inválido"),
+        Use(str, error="Parámetro 'email' es inválido"),
     Optional("telefono_celular"):
-        And(Use(str), error="Parámetro 'telefono_celular' es inválido"),
+        Use(str, error="Parámetro 'telefono_celular' es inválido"),
     Optional("genero"):
-        And(Use(str), error="Parámetro 'genero' es inválido"),
+        Use(str, error="Parámetro 'genero' es inválido"),
     Optional("curp"):
-        And(Use(str), error="Parámetro 'curp' es inválido"),
+        Use(str, error="Parámetro 'curp' es inválido"),
     Optional("ocupacion"):
-        And(Use(str), error="Parámetro 'ocupación' es inválido"),
+        Use(str, error="Parámetro 'ocupación' es inválido"),
     Optional("estado_civil"):
-        And(Use(str), error="Parámetro 'estado_civil' es inválido"),
+        Use(str, error="Parámetro 'estado_civil' es inválido"),
     Optional("enfermedades_recientes"):
-        And(Use(str), error="Parámetro 'enfermedades_recientes' es inválido"),
+        Use(str, error="Parámetro 'enfermedades_recientes' es inválido"),
     Optional("medicamentos"):
-        And(Use(str), error="Parámetro 'medicamentos' es inválido"),
+        Use(str, error="Parámetro 'medicamentos' es inválido"),
     Optional("enfermedades_cronicas"):
-        And(Use(list), error="Parámetro 'enfermedades_cronicas' es inválido"),
+        Use(list, error="Parámetro 'enfermedades_cronicas' es inválido"),
     Optional("enfermedades_hereditarias"):
-        And(Use(str), error="Parámetro 'enfermedades_hereditarias' es inválido")
+        Use(str, error="Parámetro 'enfermedades_hereditarias' es inválido")
 })
 
 doctorschema = Schema({
     Optional("id"):
-        And(Use(str), error="Parámetro 'id' es inválido"),
+        Use(str, error="Parámetro 'id' es inválido"),
     Optional("nombre"):
-        And(Use(str), error="Parámetro 'nombre' es inválido"),
+        Use(str, error="Parámetro 'nombre' es inválido"),
     Optional("apellido_paterno"):
-        And(Use(str), error="Parámetro 'apellido_paterno' es inválido"),
+        Use(str, error="Parámetro 'apellido_paterno' es inválido"),
     Optional("apellido_materno"):
-        And(Use(str), error="Parámetro 'apellido_materno' es inválido"),
+        Use(str, error="Parámetro 'apellido_materno' es inválido"),
     Optional("fecha_nacimiento"):
-        And(Use(str), error="Parámetro 'fecha_nacimiento' es inválido"),
+        Use(str, error="Parámetro 'fecha_nacimiento' es inválido"),
     Optional("email"):
-        And(Use(str), error="Parámetro 'email' es inválido"),
+        Use(str, error="Parámetro 'email' es inválido"),
     Optional("telefono_celular"):
-        And(Use(str), error="Parámetro 'telefono_celular' es inválido"),
+        Use(str, error="Parámetro 'telefono_celular' es inválido"),
     Optional("genero"):
-        And(Use(str), error="Parámetro 'genero' es inválido"),
+        Use(str, error="Parámetro 'genero' es inválido"),
     Optional("organizacion"):
-        And(Use(str), error="Parámetro 'organizacion' es inválido"),
+        Use(str, error="Parámetro 'organizacion' es inválido"),
     Optional("cedula"):
-        And(Use(list), error="Parámetro 'cedula' es inválido"),
+        Use(list, error="Parámetro 'cedula' es inválido"),
     Optional("horario"):
-        And(Use(str), error="Parámetro 'horario' es inválido"),
+        Use(str, error="Parámetro 'horario' es inválido"),
     Optional("usuario"):
-        And(Use(list), error="Parámetro 'usuario' es inválido"),
+        Use(list, error="Parámetro 'usuario' es inválido"),
     Optional("password"):
-        And(Use(str), error="Parámetro 'password' es inválido")
+        Use(str, error="Parámetro 'password' es inválido")
 })
 
 patientlistschema = Schema({
     "nombre":
-        And(Use(str), error="Parámetro 'nombre' es inválido"),
+        Use(str, error="Parámetro 'nombre' es inválido"),
     "curp":
-        And(Use(str), error="Parámetro 'curp' es inválido"),
+        Use(str, error="Parámetro 'curp' es inválido"),
 })
 
 resetpasswordschema = Schema({
     "usuario":
-        And(Use(str), error="Parámetro 'usuario' es inválido"),
+        Use(str, error="Parámetro 'usuario' es inválido"),
     Optional("password"):
-        And(Use(str), error="Parámetro 'password' es inválido")
+        Use(str, error="Parámetro 'password' es inválido")
 })
 
 analysisschema = Schema({
     "id":
-        And(Use(str), error="Parámetro 'id' es inválido")
+        Use(str, error="Parámetro 'id' es inválido")
 }, ignore_extra_keys=True)
+
+appointmentschema = Schema({
+    "id_doctor":
+        Use(str, error="Parámetro 'id_doctor' es inválido"),
+    "id_paciente":
+        Use(str, error="Parámetro 'id_paciente' es inválido"),
+    "fecha_agendada":
+        And(Use(str),
+            lambda xs: True if ((datetime.strptime(xs, '%Y-%m-%d %H:%M')) and (datetime.strptime(xs, '%Y-%m-%d %H:%M') > datetime.now())) else False,
+            error="Parámetro 'fecha_agendada' es inválido")
+})
