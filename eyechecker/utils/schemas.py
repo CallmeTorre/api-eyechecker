@@ -86,10 +86,14 @@ analysisschema = Schema({
 appointmentschema = Schema({
     "id_doctor":
         Use(str, error="Parámetro 'id_doctor' es inválido"),
-    "id_paciente":
+    Optional("id_paciente"):
         Use(str, error="Parámetro 'id_paciente' es inválido"),
-    "fecha_agendada":
+    Optional("fecha_agendada"):
         And(Use(str),
             lambda xs: True if ((datetime.strptime(xs, '%Y-%m-%d %H:%M')) and (datetime.strptime(xs, '%Y-%m-%d %H:%M') > datetime.now())) else False,
-            error="Parámetro 'fecha_agendada' es inválido")
+            error="Parámetro 'fecha_agendada' es inválido"),
+    Optional("fecha"):
+        And(Use(str),
+            lambda xs: True if (datetime.strptime(xs, '%Y-%m-%d')) else False,
+            error="Parámetro 'fecha' es inválido"),
 })

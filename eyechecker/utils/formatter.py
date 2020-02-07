@@ -58,3 +58,16 @@ def format_eye_analysis(eye_key, micros, hemorrhages, exudates):
             'micros': micros,
             'hemorrhages':hemorrhages,
             'exudates': exudates}}
+
+
+def format_appointment(appointment):
+    return {
+        'id_cita': appointment.id,
+        'id_paciente': appointment.id_paciente,
+        'fecha_agendada': appointment.fecha_agendada,
+        'nombre': appointment.nombre
+    }
+
+
+def format_appointments(appointments):
+    return [format_appointment(appointment) for appointment in appointments]

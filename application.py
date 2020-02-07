@@ -156,11 +156,18 @@ class NewPatientAnalysis(MethodView):
             command.status)
 
 
-class NewAppointment(MethodView):
+class Appointment(MethodView):
     """
     Class that creates a new appointment.
     """
     decorators = [validate_params(appointmentschema)]
+    def get(self, params):
+        command = Command(params, 'patient')
+        command.execute("list_appointments")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
     def post(self, params):
         command = Command(params, 'patient')
         command.execute("new_appointment")
@@ -174,8 +181,8 @@ doctor_view = DoctorView.as_view('doctorview')
 patient_list_view = PatientListView.as_view('patientlistview')
 reset_doctor_password_view = ResetDoctorPasswordView.as_view('resetdoctorpasswordview')
 recover_doctor_password_view = RecoverDoctorPasswordView.as_view('recoverdoctorpasswordview')
-new_patient_analysis = NewPatientAnalysis.as_view('newpatientanalysis')
-new_appointment = NewAppointment.as_view('newappointment')
+new_patient_analysis_view = NewPatientAnalysis.as_view('newpatientanalysisview')
+appointment_view = Appointment.as_view('appointmentview')
 
 application.add_url_rule(
     '/patient',
@@ -214,16 +221,16 @@ application.add_url_rule(
 )
 application.add_url_rule(
     '/patient/analysis',
-    view_func=new_patient_analysis,
+    view_func=new_patient_analysis_view,
     methods=[
         'POST'
     ]
 )
 application.add_url_rule(
-    '/patient/appointment/new',
-    view_func=new_appointment,
+    '/appointment',
+    view_func=appointment_view,
     methods=[
-        'POST'
+        'GET', 'POST'
     ]
 )
 

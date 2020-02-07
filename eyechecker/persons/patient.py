@@ -2,10 +2,10 @@ import logging
 
 from sqlalchemy import Table, cast, desc
 from sqlalchemy.sql import select, and_
-from sqlalchemy.types import String
+from sqlalchemy.types import String, Date
 
 from eyechecker.persons.person import Person
-from eyechecker.utils.formatter import format_patient
+from eyechecker.utils.formatter import format_patient, format_appointments
 from eyechecker.utils.helpers import save_temp_image, image_analysis
 class Patient(Person):
     """
@@ -231,3 +231,42 @@ class Patient(Person):
             logging.exception(str(e))
             transaction.rollback()
             return {'error': "No se puedo crear la cita"}, 500
+
+    def patient_citas_filters(self):
+        filters = []
+
+        if 'id_paciente' in self._params:
+            filters.append(self.citas.c.id_paciente == self._params['id_paciente'])
+
+        filters.append(self.citas.c.id_doctor == self._params['id_doctor'])
+
+        filters.append(
+            cast(self.citas.c.fecha_agendada, Date) >= cast(self._params['fecha'], Date))
+
+        return filters
+
+    def list_appointments(self):
+        """
+        Methot that list all the appointments given a certain dates.
+        """
+        appointments = self.engine.execute(
+                            select([
+                                self.citas.c.id,
+                                self.citas.c.id_paciente,
+                                self.citas.c.fecha_agendada,
+                                (cast(self.persons.c.nombre, String) + " " + \
+                                 cast(self.persons.c.apellido_paterno, String) + " " + \
+                                 cast(self.persons.c.apellido_materno, String)).label('nombre')]).\
+                            select_from(self.citas.\
+                                outerjoin(
+                                    self.table,
+                                    self.table.c.id ==
+                                    self.citas.c.id_paciente).\
+                                outerjoin(
+                                    self.persons,
+                                    self.persons.c.id ==
+                                    self.table.c.id_persona)).\
+                            where(
+                                and_(*self.patient_citas_filters())).\
+                            order_by(desc('fecha_agendada'))).fetchall()
+        return format_appointments(appointments), 200
