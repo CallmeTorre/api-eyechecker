@@ -91,7 +91,7 @@ class Image:
         t1.join() 
         t2.join() 
         
-        return grading.grade_lesion(self.all_ma, self.all_hr, self.all_he))
+        return grading.grade_lesion(self.all_ma, self.all_hr, self.all_he)
 
 # test = Image("images/bimg.jpg")
 #test = Image("images/timg.png")
