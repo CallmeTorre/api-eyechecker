@@ -62,8 +62,8 @@ class Image:
         self.hr_img = util.paint_lesions(self.img, real_hemo, possible_hemo)
 
         #return util.save_image("imagen_final", self.ma_img), util.save_image("imagen_final_2", self.hr_img)
-        threading.Thread(target=util.save_latex_image, args=("5_micro", self.ma_img)).start() 
-        threading.Thread(target=util.save_latex_image, args=("6_hemo", self.hr_img)).start() 
+        threading.Thread(target=util.save_image, args=("5_micro", self.ma_img)).start() 
+        threading.Thread(target=util.save_image, args=("6_hemo", self.hr_img)).start() 
 
 
 
@@ -80,7 +80,7 @@ class Image:
 
         self.he_img = util.paint_lesions(self.img, real_he, possible_hard_exu)
         #return util.save_image("imagen_final_3", self.he_img)
-        threading.Thread(target=util.save_latex_image, args=("1_hexu", self.he_img)).start()
+        threading.Thread(target=util.save_image, args=("1_hexu", self.he_img)).start()
     
     def get_grade_of_image(self):
         t1 = threading.Thread(target=self.get_microaneurysms_and_hemorrhages, args=()) 
