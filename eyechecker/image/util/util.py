@@ -1,3 +1,4 @@
+import sys
 from os import getcwd, path
 from pathlib import Path
 
@@ -6,13 +7,17 @@ from skimage import io
 from skimage.draw import set_color
 from skimage.transform import resize
 from skimage.color import rgb2hsv
-#from skimage.viewer import ImageViewer
 
+from warnings import simplefilter
+
+def turn_off_warnings():
+    if not sys.warnoptions:
+        simplefilter("ignore")
+        simplefilter("ignore", category=FutureWarning)
 
 def open_image(url: str):
     # It returns a numpy array
     return io.imread(url)
-
 
 def get_green_channel(rgb_image):
     # RGB values, each pixel is stored as 8-bit 3-channel color images (0 to 255)
@@ -29,7 +34,6 @@ def scale_image(img, normalized_height: int, normalized_width: int):
         img = resize(img, (normalized_height, normalized_width))
     return img
 
-
 def paint_lesions(img, lesions, coordinates):
     # It paints the lesion in the original image
     copy_img = np.copy(img)
@@ -40,15 +44,8 @@ def paint_lesions(img, lesions, coordinates):
                 set_color(copy_img, (x, y), (1, 0.8, 0))
     return copy_img
 
-
 def save_image(filename, image):
     current_path = Path(getcwd())
     image_path = path.join(current_path, 'eyechecker', 'image', 'images', filename + '.png')
     io.imsave(image_path, image)
     return image_path
-
-
-#def view_image(image):
-    # IO helper method to visualize the image
-#    viewer = ImageViewer(image)
-#    viewer.show()
