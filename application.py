@@ -175,6 +175,13 @@ class Appointment(MethodView):
             jsonify(command.result),
             command.status)
 
+    def delete(self, params):
+        command = Command(params, 'patient')
+        command.execute("delete_appointment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
 
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')

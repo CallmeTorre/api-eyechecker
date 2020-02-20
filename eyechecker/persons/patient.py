@@ -270,3 +270,20 @@ class Patient(Person):
                                 and_(*self.patient_citas_filters())).\
                             order_by(desc('fecha_agendada'))).fetchall()
         return format_appointments(appointments), 200
+
+    def delete_appointment(self):
+        """
+        Method that deletes an appoitnment.
+        """
+        transaction = self._connection.begin()
+        try:
+            self._connection.execute(
+                self.citas.delete().\
+                where(self.citas.c.id == self._params['id']))
+            transaction.commit()
+            return {'status': 'Cita borrado correctamente'}, 200
+        except Exception as e:
+            logging.error("No se puedo borrar la cita")
+            logging.exception(str(e))
+            transaction.rollback()
+            return {'error': "No se puedo borrar la cita"}, 500

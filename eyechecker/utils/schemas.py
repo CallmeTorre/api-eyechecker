@@ -84,7 +84,9 @@ analysisschema = Schema({
 }, ignore_extra_keys=True)
 
 appointmentschema = Schema({
-    "id_doctor":
+    Optional("id"):
+        Use(str, error="Parámetro 'id' es inválido"),
+    Optional("id_doctor"):
         Use(str, error="Parámetro 'id_doctor' es inválido"),
     Optional("id_paciente"):
         Use(str, error="Parámetro 'id_paciente' es inválido"),
