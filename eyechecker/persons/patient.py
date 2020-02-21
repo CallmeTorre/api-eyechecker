@@ -2,11 +2,11 @@ import logging
 
 from sqlalchemy import Table, cast, desc
 from sqlalchemy.sql import select, and_
-from sqlalchemy.types import String
+from sqlalchemy.types import String, Date
 
 from eyechecker.persons.person import Person
-from eyechecker.utils.formatter import format_patient
-
+from eyechecker.utils.formatter import format_patient, format_appointments
+from eyechecker.utils.helpers import save_temp_image, image_analysis
 class Patient(Person):
     """
     Class that defines main patient's operations.
@@ -42,7 +42,7 @@ class Patient(Person):
                 self.table.insert().values(**patient)).inserted_primary_key[0]
             transaction.commit()
             return {'id_paciente': id,
-                    'id_persona': self._params['id_persona']}, 200
+                    'id_persona': self._params['id_persona']}, 201
         except Exception as e:
             logging.error("No se puedo crear el paciente")
             logging.exception(str(e))
@@ -178,3 +178,130 @@ class Patient(Person):
             'medicamentos': patient_info.medicamentos,
             'enfermedades_hereditarias': patient_info.enfermedades_hereditarias
         }, 200
+
+    def new_analysis(self):
+        """
+        Method that receives the patient eye image(s) and create the analysis.
+        """
+        result = {}
+        result.update(image_analysis('left_eye', self._params))
+        result.update(image_analysis('right_eye', self._params))
+        return  result, 200
+
+    def _check_appointment_availability_filters(self):
+        """
+        Private method that work as filters to check if a date is open.
+        """
+        filters = []
+
+        filters.append(self._params['id_doctor'] == self.citas.c.id_doctor)
+
+        filters.append(self._params['fecha_agendada'] == self.citas.c.fecha_agendada)
+
+        return filters
+
+    def _check_appointment_availability(self):
+        """
+        Method that checks if the doctor doesn't have an appointment
+        at the same time.
+        """
+        availability = self._connection.execute(
+            select([
+                self.citas]).\
+            where(
+                and_(
+                    *self._check_appointment_availability_filters()))).fetchone()
+        return True if availability is None else False
+
+    def new_appointment(self):
+        """
+        Method that receives the information of an appointment and creates one.
+        """
+        transaction = self._connection.begin()
+        try:
+            if self._check_appointment_availability() is True:
+                self._connection.execute(
+                    self.citas.insert().values(**self._params))
+                transaction.commit()
+                return {'status': 'Cita creada correctamente'}, 201
+            else:
+                return {'status': 'Horario ocupado'}, 200
+        except Exception as e:
+            logging.error("No se puedo crear la cita")
+            logging.exception(str(e))
+            transaction.rollback()
+            return {'error': "No se puedo crear la cita"}, 500
+
+    def patient_citas_filters(self):
+        filters = []
+
+        if 'id_paciente' in self._params:
+            filters.append(self.citas.c.id_paciente == self._params['id_paciente'])
+
+        filters.append(self.citas.c.id_doctor == self._params['id_doctor'])
+
+        filters.append(
+            cast(self.citas.c.fecha_agendada, Date) >= cast(self._params['fecha'], Date))
+
+        return filters
+
+    def list_appointments(self):
+        """
+        Methot that list all the appointments given a certain dates.
+        """
+        appointments = self.engine.execute(
+                            select([
+                                self.citas.c.id,
+                                self.citas.c.id_paciente,
+                                self.citas.c.fecha_agendada,
+                                (cast(self.persons.c.nombre, String) + " " + \
+                                 cast(self.persons.c.apellido_paterno, String) + " " + \
+                                 cast(self.persons.c.apellido_materno, String)).label('nombre')]).\
+                            select_from(self.citas.\
+                                outerjoin(
+                                    self.table,
+                                    self.table.c.id ==
+                                    self.citas.c.id_paciente).\
+                                outerjoin(
+                                    self.persons,
+                                    self.persons.c.id ==
+                                    self.table.c.id_persona)).\
+                            where(
+                                and_(*self.patient_citas_filters())).\
+                            order_by(desc('fecha_agendada'))).fetchall()
+        return format_appointments(appointments), 200
+
+    def delete_appointment(self):
+        """
+        Method that deletes an appoitnment.
+        """
+        transaction = self._connection.begin()
+        try:
+            self._connection.execute(
+                self.citas.delete().\
+                where(self.citas.c.id == self._params['id']))
+            transaction.commit()
+            return {'status': 'Cita borrado correctamente'}, 200
+        except Exception as e:
+            logging.error("No se puedo borrar la cita")
+            logging.exception(str(e))
+            transaction.rollback()
+            return {'error': "No se puedo borrar la cita"}, 500
+
+    def update_appointment(self):
+        """
+        Method that updates the information of a patient.
+        """
+        transaction = self._connection.begin()
+        try:
+            self._connection.execute(
+                self.citas.update().\
+                where(self.citas.c.id == self._params['id']).\
+                values(**self._params))
+            transaction.commit()
+            return {'status': 'Cita actualizada correctamente'}, 200
+        except Exception as e:
+            logging.error("No se puedo actualizar la cita")
+            logging.exception(str(e))
+            transaction.rollback()
+            return {'error': "No se pudo actualizar la cita"}, 500

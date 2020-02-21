@@ -15,7 +15,9 @@ from eyechecker.utils.command import Command
 from eyechecker.utils.schemas import (patientschema,
                                       doctorschema,
                                       patientlistschema,
-                                      resetpasswordschema)
+                                      resetpasswordschema,
+                                      analysisschema,
+                                      appointmentschema)
 
 application = Flask(__name__)
 
@@ -141,12 +143,60 @@ class RecoverDoctorPasswordView(MethodView):
             command.status)
 
 
+class NewPatientAnalysis(MethodView):
+    """
+    Class that creates a new analysis
+    """
+    decorators = [validate_params(analysisschema)]
+    def post(self, params):
+        command = Command(params, 'patient')
+        command.execute("new_analysis")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+
+class Appointment(MethodView):
+    """
+    Class that creates a new appointment.
+    """
+    decorators = [validate_params(appointmentschema)]
+    def get(self, params):
+        command = Command(params, 'patient')
+        command.execute("list_appointments")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def post(self, params):
+        command = Command(params, 'patient')
+        command.execute("new_appointment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def delete(self, params):
+        command = Command(params, 'patient')
+        command.execute("delete_appointment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def put(self, params):
+        command = Command(params, 'patient')
+        command.execute("update_appointment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
 patient_list_view = PatientListView.as_view('patientlistview')
 reset_doctor_password_view = ResetDoctorPasswordView.as_view('resetdoctorpasswordview')
 recover_doctor_password_view = RecoverDoctorPasswordView.as_view('recoverdoctorpasswordview')
-
+new_patient_analysis_view = NewPatientAnalysis.as_view('newpatientanalysisview')
+appointment_view = Appointment.as_view('appointmentview')
 
 application.add_url_rule(
     '/patient',
@@ -183,7 +233,20 @@ application.add_url_rule(
         'POST'
     ]
 )
-
+application.add_url_rule(
+    '/patient/analysis',
+    view_func=new_patient_analysis_view,
+    methods=[
+        'POST'
+    ]
+)
+application.add_url_rule(
+    '/appointment',
+    view_func=appointment_view,
+    methods=[
+        'GET', 'POST', 'DELETE', 'PUT'
+    ]
+)
 
 @application.errorhandler(500)
 def internal_error(error):
