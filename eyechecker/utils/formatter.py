@@ -52,12 +52,13 @@ def format_account(params):
     }
 
 
-def format_eye_analysis(eye_key, micros, hemorrhages, exudates):
+def format_eye_analysis(eye_key, micros, hemorrhages, exudates, conclusion):
     return {
         eye_key: {
             'micros': micros,
             'hemorrhages':hemorrhages,
-            'exudates': exudates}}
+            'exudates': exudates,
+            'conclusion': conclusion}}
 
 
 def format_appointment(appointment):
