@@ -287,3 +287,21 @@ class Patient(Person):
             logging.exception(str(e))
             transaction.rollback()
             return {'error': "No se puedo borrar la cita"}, 500
+
+    def update_appointment(self):
+        """
+        Method that updates the information of a patient.
+        """
+        transaction = self._connection.begin()
+        try:
+            self._connection.execute(
+                self.citas.update().\
+                where(self.citas.c.id == self._params['id']).\
+                values(**self._params))
+            transaction.commit()
+            return {'status': 'Cita actualizada correctamente'}, 200
+        except Exception as e:
+            logging.error("No se puedo actualizar la cita")
+            logging.exception(str(e))
+            transaction.rollback()
+            return {'error': "No se pudo actualizar la cita"}, 500

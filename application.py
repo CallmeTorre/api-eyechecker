@@ -182,6 +182,13 @@ class Appointment(MethodView):
             jsonify(command.result),
             command.status)
 
+    def put(self, params):
+        command = Command(params, 'patient')
+        command.execute("update_appointment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
 
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
@@ -237,7 +244,7 @@ application.add_url_rule(
     '/appointment',
     view_func=appointment_view,
     methods=[
-        'GET', 'POST'
+        'GET', 'POST', 'DELETE', 'PUT'
     ]
 )
 
