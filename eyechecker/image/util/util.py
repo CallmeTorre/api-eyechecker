@@ -41,7 +41,7 @@ def paint_lesions(img, lesions, coordinates):
         if l == 1:
             topaint = coordinates[i]
             for x, y in topaint:
-                set_color(copy_img, (x, y), (1, 0.8, 0))
+                set_color(copy_img, (x, y), (1, .35, 1))
     return copy_img
 
 def save_image(filename, image):
