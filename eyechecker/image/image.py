@@ -34,6 +34,12 @@ class Image:
         self.ma_img = None
         self.he_img = None
         self.hr_img = None
+        
+        self.all_ma = None
+        self.all_hr = None
+        self.all_he = None
+        
+        util.turn_off_warnings()
 
     def get_microaneurysms_and_hemorrhages(self):
         green_channel = util.get_green_channel(self.img)
@@ -55,12 +61,11 @@ class Image:
         self.ma_img = util.paint_lesions(self.img, real_micro, possible_micro)
         self.hr_img = util.paint_lesions(self.img, real_hemo, possible_hemo)
 
-        return util.save_image("imagen_final", self.ma_img), util.save_image("imagen_final_2", self.hr_img)
+        #return util.save_image("imagen_final", self.ma_img), util.save_image("imagen_final_2", self.hr_img)
+        threading.Thread(target=util.save_image, args=("5_micro", self.ma_img)).start() 
+        threading.Thread(target=util.save_image, args=("6_hemo", self.hr_img)).start() 
 
-        ###################
-        #util.view_image(self.ma_img)
-        #util.view_image(self.hr_img)
-        ###################
+
 
     def get_hardexudate(self):
         green_channel = util.get_green_channel(self.img)
@@ -74,12 +79,19 @@ class Image:
         real_he = classify.classify(green_values_of_points, "he")
 
         self.he_img = util.paint_lesions(self.img, real_he, possible_hard_exu)
-        return util.save_image("imagen_final_3", self.he_img)
-
-        ###################
-        # util.view_image(self.he_img)
-        ###################
-
+        #return util.save_image("imagen_final_3", self.he_img)
+        threading.Thread(target=util.save_image, args=("1_hexu", self.he_img)).start()
+    
+    def get_grade_of_image(self):
+        t1 = threading.Thread(target=self.get_microaneurysms_and_hemorrhages, args=()) 
+        t2 = threading.Thread(target=self.get_hardexudate, args=())  
+        
+        t1.start() 
+        t2.start()
+        t1.join() 
+        t2.join() 
+        
+        return grading.grade_lesion(self.all_ma, self.all_hr, self.all_he)
 
 # test = Image("images/bimg.jpg")
 #test = Image("images/timg.png")
