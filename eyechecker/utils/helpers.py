@@ -35,5 +35,4 @@ def image_analysis(eye_key, params):
             eye_exudates = eye_class.get_hardexudate()
             conclusion = eye_class.get_grade_of_image()
             return format_eye_analysis(eye_key, eye_micros, eye_hemorrhages, eye_exudates, conclusion)
-    else:
-        return {'eye_key':{}}
+    return {'eye_key':{}}
