@@ -7,6 +7,7 @@ from sqlalchemy.types import String, Date
 from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import format_patient, format_appointments
 from eyechecker.utils.helpers import save_temp_image, image_analysis
+from eyechecker.utils.pdf import create_pdf
 class Patient(Person):
     """
     Class that defines main patient's operations.
@@ -186,6 +187,7 @@ class Patient(Person):
         result = {}
         result.update(image_analysis('left_eye', self._params))
         result.update(image_analysis('right_eye', self._params))
+        create_pdf("Example.pdf", "Example", result)
         return  result, 200
 
     def _check_appointment_availability_filters(self):
