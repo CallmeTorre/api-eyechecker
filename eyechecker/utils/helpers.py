@@ -31,8 +31,8 @@ def image_analysis(eye_key, params):
         eye_path = save_temp_image(params[eye_key])
         if(eye_path):
             eye_class = Image(eye_path)
-            eye_micros, eye_hemorrhages = eye_class.get_microaneurysms_and_hemorrhages()
-            eye_exudates = eye_class.get_hardexudate()
+            eye_micros, eye_hemorrhages = eye_class.get_microaneurysms_and_hemorrhages(eye_key)
+            eye_exudates = eye_class.get_hardexudate(eye_key)
             conclusion = eye_class.get_grade_of_image()
             return format_eye_analysis(eye_path, eye_key, eye_micros, eye_hemorrhages, eye_exudates, conclusion)
     return {eye_key:{}}

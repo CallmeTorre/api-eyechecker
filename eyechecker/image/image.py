@@ -43,7 +43,7 @@ class Image:
 
         util.turn_off_warnings()
 
-    def get_microaneurysms_and_hemorrhages(self):
+    def get_microaneurysms_and_hemorrhages(self, eye):
         green_channel = util.get_green_channel(self.img)
         enhanced_img = enhance_histogram.equalize_adapthist(green_channel, clip_limit=0.05)
         border_img = detect_borders.canny(enhanced_img, sigma=1.5, high_threshold=0.15)
@@ -65,9 +65,9 @@ class Image:
         self.ma_img = util.paint_lesions(self.img, real_micro, possible_micro)
         self.hr_img = util.paint_lesions(self.img, real_hemo, possible_hemo)
 
-        return util.save_image("imagen_final", self.ma_img), util.save_image("imagen_final_2", self.hr_img)
+        return util.save_image("imagen_final_" + eye, self.ma_img), util.save_image("imagen_final_" + eye + "_2", self.hr_img)
 
-    def get_hardexudate(self):
+    def get_hardexudate(self, eye):
         green_channel = util.get_green_channel(self.img)
         hsv_channel = util.get_HSV_channel(self.img)
         bright_regions = threshold.get_bright_regions(hsv_channel, green_channel)
@@ -80,7 +80,7 @@ class Image:
 
         self.all_he = real_he
         self.he_img = util.paint_lesions(self.img, real_he, possible_hard_exu)
-        return util.save_image("imagen_final_3", self.he_img)
+        return util.save_image("imagen_final_" + eye + "_3", self.he_img)
 
     def get_grade_of_image(self):
 
