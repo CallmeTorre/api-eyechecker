@@ -313,4 +313,10 @@ class Patient(Person):
         catalogue_info = self.engine.execute(
             select([
                 self.cat_estado_civil])).fetchall()
-        return {info.id: info.value for info in catalogue_info}, 200
+        return {info.id: info.tipo for info in catalogue_info}, 200
+
+    def list_catalogue_ocupacion(self):
+        catalogue_info = self.engine.execute(
+            select([
+                self.cat_ocupacion])).fetchall()
+        return {info.id: info.ocupacion for info in catalogue_info}, 200
