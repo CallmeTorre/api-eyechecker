@@ -211,7 +211,7 @@ class Doctor(Person):
                 where(self.account.c.usuario == self._params['usuario'])).fetchone()
         if account_info == None:
             return {'access': False}, 403
-        elif account_info.password == self._params['password']:
+        elif account_info.password != self._params['password']:
             return {'access': False}, 403
         else:
             return {'access': True}, 200
