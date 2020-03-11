@@ -202,6 +202,16 @@ class Login(MethodView):
             jsonify(command.result),
             command.status)
 
+class ListCatalogueEstadoCivil(MethodView):
+    """
+    Class that list estado civil catalogue info.
+    """
+    def get(self):
+        command = Command({}, 'patient')
+        command.execute("list_catalogue_estado_civil")
+        return make_response(
+            jsonify(command.result),
+            command.status)
 
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
@@ -211,6 +221,7 @@ recover_doctor_password_view = RecoverDoctorPasswordView.as_view('recoverdoctorp
 new_patient_analysis_view = NewPatientAnalysis.as_view('newpatientanalysisview')
 appointment_view = Appointment.as_view('appointmentview')
 validate_login_view = Login.as_view('loginview')
+list_catalogue_estado_civil_view = ListCatalogueEstadoCivil.as_view('listcatalogueestadocivil')
 
 application.add_url_rule(
     '/patient',
@@ -266,6 +277,13 @@ application.add_url_rule(
     view_func=validate_login_view,
     methods=[
         'POST'
+    ]
+)
+application.add_url_rule(
+    '/list/catalogue/estado_civil',
+    view_func=list_catalogue_estado_civil_view,
+    methods=[
+        'GET'
     ]
 )
 @application.errorhandler(500)

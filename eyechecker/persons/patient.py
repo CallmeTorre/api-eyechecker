@@ -308,3 +308,9 @@ class Patient(Person):
             logging.exception(str(e))
             transaction.rollback()
             return {'error': "No se pudo actualizar la cita"}, 500
+
+    def list_catalogue_estado_civil(self):
+        catalogue_info = self.engine.execute(
+            select([
+                self.cat_estado_civil])).fetchall()
+        return {info.id: info.value for info in catalogue_info}, 200
