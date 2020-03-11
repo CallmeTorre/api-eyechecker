@@ -17,7 +17,8 @@ from eyechecker.utils.schemas import (patientschema,
                                       patientlistschema,
                                       resetpasswordschema,
                                       analysisschema,
-                                      appointmentschema)
+                                      appointmentschema,
+                                      loginschema)
 
 application = Flask(__name__)
 
@@ -189,6 +190,18 @@ class Appointment(MethodView):
             jsonify(command.result),
             command.status)
 
+class Login(MethodView):
+    """
+    Class that creates a new appointment.
+    """
+    decorators = [validate_params(loginschema)]
+    def post(self, params):
+        command = Command(params, 'doctor')
+        command.execute("validate_login")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
 
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
@@ -197,6 +210,7 @@ reset_doctor_password_view = ResetDoctorPasswordView.as_view('resetdoctorpasswor
 recover_doctor_password_view = RecoverDoctorPasswordView.as_view('recoverdoctorpasswordview')
 new_patient_analysis_view = NewPatientAnalysis.as_view('newpatientanalysisview')
 appointment_view = Appointment.as_view('appointmentview')
+validate_login_view = Login.as_view('loginview')
 
 application.add_url_rule(
     '/patient',
@@ -247,7 +261,13 @@ application.add_url_rule(
         'GET', 'POST', 'DELETE', 'PUT'
     ]
 )
-
+application.add_url_rule(
+    '/login',
+    view_func=validate_login_view,
+    methods=[
+        'POST'
+    ]
+)
 @application.errorhandler(500)
 def internal_error(error):
     """

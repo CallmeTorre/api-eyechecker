@@ -188,3 +188,30 @@ class Doctor(Person):
             return send_recover_email(user.email)
         else:
             return {'error': "Usario no existente"}, 404
+    
+    def validate_login(self):
+        """
+        Method that validate the users information.
+        """
+        account_info = self.engine.execute(
+            select([
+                    self.account.c.id,
+                    self.account.c.usuario,
+                    self.account.c.password]).\
+                select_from(self.account.\
+                    outerjoin(
+                        self.table,
+                        self.table.c.id ==
+                        self.account.c.id_doctor).\
+                    outerjoin(
+                        self.persons,
+                        self.persons.c.id ==
+                        self.table.c.id_persona
+                    )).\
+                where(self.account.c.usuario == self._params['usuario'])).fetchone()
+        if account_info == None:
+            return {'access': False}
+        elif account_info.password == self._params['password']:
+            return {'access': False}
+        else:
+            return {'access': True}

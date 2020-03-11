@@ -99,3 +99,10 @@ appointmentschema = Schema({
             lambda xs: True if (datetime.strptime(xs, '%Y-%m-%d')) else False,
             error="Parámetro 'fecha' es inválido"),
 })
+
+loginschema = Schema({
+    "usuario":
+        Use(str, error="Parámetro 'usuario' es inválido"),
+    "password":
+        Use(str, error="Parámetro 'password' es inválido")
+})
