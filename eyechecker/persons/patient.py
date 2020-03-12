@@ -188,7 +188,7 @@ class Patient(Person):
         result.update(image_analysis('left_eye', self._params))
         result.update(image_analysis('right_eye', self._params))
         patient_info , _ = self.get()
-        create_pdf("Example.pdf", "Example", result, patient_info)
+        create_pdf(result, patient_info)
         return  result, 200
 
     def _check_appointment_availability_filters(self):

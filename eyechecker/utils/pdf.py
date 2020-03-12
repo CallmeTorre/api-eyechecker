@@ -7,7 +7,9 @@ from reportlab.lib.pagesizes import letter
 EYES = {'left_eye': 'Izquierdo',
         'right_eye': 'Derecho'}
 
-def create_pdf(pdf_name, title, result, patient_info):
+def create_pdf(result, patient_info):
+    pdf_name = patient_info['curp'] +  datetime.now().strftime("%d%m%Y%H%M%S")
+    title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
     pdf = Canvas(pdf_name, pagesize=letter)
     pdf.setTitle(title)
