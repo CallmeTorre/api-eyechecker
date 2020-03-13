@@ -1,4 +1,6 @@
+from pathlib import Path
 from datetime import datetime
+from os import getcwd, path
 from dateutil.relativedelta import relativedelta
 
 from reportlab.pdfgen.canvas import Canvas
@@ -8,6 +10,7 @@ EYES = {'left_eye': 'Izquierdo',
         'right_eye': 'Derecho'}
 
 def create_pdf(result, patient_info):
+    current_path = Path(getcwd())
     pdf_name = patient_info['curp'] +  datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
     title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
@@ -32,3 +35,4 @@ def create_pdf(result, patient_info):
             pdf.drawString(335,height-715,"Detección de Microaneurismas")
             pdf.showPage()
     pdf.save()
+    return {'pdf_path': path.join(current_path, pdf_name)}
