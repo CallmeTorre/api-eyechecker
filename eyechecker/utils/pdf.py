@@ -8,7 +8,7 @@ EYES = {'left_eye': 'Izquierdo',
         'right_eye': 'Derecho'}
 
 def create_pdf(result, patient_info):
-    pdf_name = patient_info['curp'] +  datetime.now().strftime("%d%m%Y%H%M%S")
+    pdf_name = patient_info['curp'] +  datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
     title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
     pdf = Canvas(pdf_name, pagesize=letter)
