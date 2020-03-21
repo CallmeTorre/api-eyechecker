@@ -1,17 +1,33 @@
+from logging import info
 from pathlib import Path
 from datetime import datetime
-from os import getcwd, path
+from os import getcwd, path, getenv, remove
 from dateutil.relativedelta import relativedelta
 
+from boto3 import client
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.pagesizes import letter
 
 EYES = {'left_eye': 'Izquierdo',
         'right_eye': 'Derecho'}
 
+def upload_pdf_s3(curp, pdf_name):
+    info('Subiendo el reporte')
+    s3 = client(
+            "s3",
+            aws_access_key_id=getenv('AWS_ACCESS_KEY'),
+            aws_secret_access_key=getenv('AWS_SECRET_ACCESS_KEY'))
+    s3.upload_file(
+        Bucket=getenv('BUCKET_NAME'),
+        Filename=pdf_name,
+        Key=curp + "/" + pdf_name
+    )
+    info('Reporte subido')
+
+
 def create_pdf(result, patient_info):
-    current_path = Path(getcwd())
-    pdf_name = patient_info['curp'] +  datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
+    info("Creando reporte")
+    pdf_name = datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
     title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
     pdf = Canvas(pdf_name, pagesize=letter)
@@ -26,13 +42,22 @@ def create_pdf(result, patient_info):
             pdf.drawString(80, height-260, "Ojo analizado: " + EYES[key])
             pdf.drawString(80, height-300, "Conclusión: " + value['conclusion'])
             pdf.drawInlineImage(value["original"], 80, height-500, 200, 150)
+            remove(value["original"])
             pdf.drawString(130,height-515,"Imagen Original")
             pdf.drawInlineImage(value["exudates"], 320, height-500, 200, 150)
+            remove(value["exudates"])
             pdf.drawString(360,height-515,"Detección de Exudados")
             pdf.drawInlineImage(value["hemorrhages"], 80, height- 700, 200, 150)
+            remove(value["hemorrhages"])
             pdf.drawString(110,height-715,"Detección de Hemorragias")
             pdf.drawInlineImage(value["micros"], 320, height - 700, 200, 150)
+            remove(value["micros"])
             pdf.drawString(335,height-715,"Detección de Microaneurismas")
             pdf.showPage()
     pdf.save()
-    return {'pdf_path': path.join(current_path, pdf_name)}
+    info("Reporte creado")
+    upload_pdf_s3(patient_info['curp'], pdf_name)
+    info("Borrando reporte")
+    remove(pdf_name)
+    info("Reporte borrado")
+    return {'pdf': pdf_name}
