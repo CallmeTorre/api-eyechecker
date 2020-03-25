@@ -149,6 +149,7 @@ class Patient(Person):
                             select([
                                 self.persons,
                                 self.table,
+                                self.table.c.id.label('id_paciente'),
                                 self.cat_estado_civil.c.tipo.label('estado_civil'),
                                 self.cat_ocupacion.c.ocupacion]).\
                             select_from(self.table.\
@@ -166,6 +167,7 @@ class Patient(Person):
                                     self.table.c.id_estado_civil)).\
                             where(self.persons.c.id == self._params['id'])).fetchone()
         return {
+            'id_paciente': patient_info.id_paciente,
             'nombre': patient_info.nombre + " " + patient_info.apellido_paterno + " " + patient_info.apellido_materno,
             'fecha_nacimiento': patient_info.fecha_nacimiento,
             'email': patient_info.email,
@@ -181,15 +183,25 @@ class Patient(Person):
         }, 200
 
     def new_analysis(self):
+        #TODO Rewrite this method.
         """
         Method that receives the patient eye image(s) and create the analysis.
         """
-        #TODO Make a better validation for the parameters
+        #TODO Make a better validation for the parameters.
         result = {}
         patient_info , _ = self.get()
         for eye in ['left_eye', 'right_eye']:
             result.update(image_analysis(eye, self._params))
-        return create_pdf(result, patient_info), 200
+        pdf_name = create_pdf(result, patient_info)
+        reporte_info = {
+            'id_paciente': patient_info['id_paciente'],
+            'id_doctor': self._params['id_medico'],
+            'url_reporte': str(patient_info['id_paciente']) + '/' + pdf_name
+        }
+        id_reporte = self.engine.execute(
+                self.reportes.insert().values(**reporte_info)).inserted_primary_key[0]
+        return {'pdf': pdf_name,
+                'id_reporte': id_reporte}, 200
 
     def _check_appointment_availability_filters(self):
         """

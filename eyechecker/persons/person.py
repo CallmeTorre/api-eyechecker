@@ -42,6 +42,11 @@ class Person(metaclass=ABCMeta):
             self.meta,
             autoload=True,
             autoload_with=self.engine)
+        self._reportes = Table(
+            'reportes',
+            self.meta,
+            autoload=True,
+            autoload_with=self.engine)
         self._connection = self.engine.connect()
 
     @property
@@ -85,6 +90,13 @@ class Person(metaclass=ABCMeta):
         Citas' Table.
         """
         return self._citas
+
+    @property
+    def reportes(self):
+        """
+        Reportes' Table.
+        """
+        return self._reportes
 
     @abstractproperty
     def table(self):

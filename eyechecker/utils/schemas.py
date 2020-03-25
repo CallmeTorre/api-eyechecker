@@ -80,7 +80,9 @@ resetpasswordschema = Schema({
 
 analysisschema = Schema({
     "id":
-        Use(str, error="Parámetro 'id' es inválido")
+        Use(str, error="Parámetro 'id' es inválido"),
+    "id_medico":
+        Use(str, error="Parámetro 'id_medico' es inválido")
 }, ignore_extra_keys=True)
 
 appointmentschema = Schema({

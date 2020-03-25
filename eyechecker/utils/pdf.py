@@ -11,7 +11,7 @@ from reportlab.lib.pagesizes import letter
 EYES = {'left_eye': 'Izquierdo',
         'right_eye': 'Derecho'}
 
-def upload_pdf_s3(curp, pdf_name):
+def upload_pdf_s3(id_paciente, pdf_name):
     info('Subiendo el reporte')
     s3 = client(
             "s3",
@@ -20,7 +20,7 @@ def upload_pdf_s3(curp, pdf_name):
     s3.upload_file(
         Bucket=getenv('BUCKET_NAME'),
         Filename=pdf_name,
-        Key=curp + "/" + pdf_name
+        Key=str(id_paciente) + "/" + pdf_name
     )
     info('Reporte subido')
 
@@ -56,8 +56,8 @@ def create_pdf(result, patient_info):
             pdf.showPage()
     pdf.save()
     info("Reporte creado")
-    upload_pdf_s3(patient_info['curp'], pdf_name)
+    upload_pdf_s3(patient_info['id_paciente'], pdf_name)
     info("Borrando reporte")
     remove(pdf_name)
     info("Reporte borrado")
-    return {'pdf': pdf_name}
+    return pdf_name
