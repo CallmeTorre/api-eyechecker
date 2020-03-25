@@ -11,6 +11,19 @@ from reportlab.lib.pagesizes import letter
 EYES = {'left_eye': 'Izquierdo',
         'right_eye': 'Derecho'}
 
+def get_pdf_url(url):
+    s3 = client(
+            "s3",
+            aws_access_key_id=getenv('AWS_ACCESS_KEY'),
+            aws_secret_access_key=getenv('AWS_SECRET_ACCESS_KEY'))
+    response = s3.generate_presigned_url(
+        'get_object',
+        Params={
+            'Bucket': getenv('BUCKET_NAME'),
+            'Key': url},
+        ExpiresIn=3600)
+    return response
+
 def upload_pdf_s3(id_paciente, pdf_name):
     info('Subiendo el reporte')
     s3 = client(

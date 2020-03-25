@@ -113,3 +113,8 @@ listanalysisschema = Schema({
     "id":
         Use(str, error="Parámetro 'id' es inválido"),
 })
+
+getanalysisschema = Schema({
+    "url":
+        Use(str, error="Parámetro 'url' es inválido"),
+})

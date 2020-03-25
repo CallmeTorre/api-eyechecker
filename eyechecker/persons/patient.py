@@ -7,7 +7,7 @@ from sqlalchemy.types import String, Date
 from eyechecker.persons.person import Person
 from eyechecker.utils.formatter import format_patient, format_appointments, format_analysis
 from eyechecker.utils.helpers import save_temp_image, image_analysis
-from eyechecker.utils.pdf import create_pdf
+from eyechecker.utils.pdf import create_pdf, get_pdf_url
 class Patient(Person):
     """
     Class that defines main patient's operations.
@@ -341,3 +341,7 @@ class Patient(Person):
             where(self.reportes.c.id_paciente == self._params['id'])
         ).fetchall()
         return format_analysis(analysis), 200
+
+    def get_analysis(self):
+        response = get_pdf_url(self._params['url'])
+        return {'url': response}, 200
