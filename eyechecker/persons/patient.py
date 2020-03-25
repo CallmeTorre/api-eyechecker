@@ -5,7 +5,7 @@ from sqlalchemy.sql import select, and_
 from sqlalchemy.types import String, Date
 
 from eyechecker.persons.person import Person
-from eyechecker.utils.formatter import format_patient, format_appointments
+from eyechecker.utils.formatter import format_patient, format_appointments, format_analysis
 from eyechecker.utils.helpers import save_temp_image, image_analysis
 from eyechecker.utils.pdf import create_pdf
 class Patient(Person):
@@ -332,3 +332,12 @@ class Patient(Person):
             select([
                 self.cat_ocupacion])).fetchall()
         return {info.id: info.ocupacion for info in catalogue_info}, 200
+
+    def list_analysis(self):
+        analysis = self.engine.execute(
+            select([
+                self.reportes.c.id,
+                self.reportes.c.url_reporte]).\
+            where(self.reportes.c.id_paciente == self._params['id'])
+        ).fetchall()
+        return format_analysis(analysis), 200

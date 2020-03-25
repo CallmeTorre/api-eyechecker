@@ -44,7 +44,8 @@ resetpasswordparams = {
 
 
 analysisparams = {
-    'id': 'qdsajksdiuayi9'
+    'id': 'qdsajksdiuayi9',
+    'id_medico': '12'
 }
 
 appointmentparams= {

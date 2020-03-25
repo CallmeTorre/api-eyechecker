@@ -18,7 +18,8 @@ from eyechecker.utils.schemas import (patientschema,
                                       resetpasswordschema,
                                       analysisschema,
                                       appointmentschema,
-                                      loginschema)
+                                      loginschema,
+                                      listanalysisschema)
 
 application = Flask(__name__)
 
@@ -224,6 +225,18 @@ class ListCatalogueOcupacion(MethodView):
             jsonify(command.result),
             command.status)
 
+class ListPatientAnalysis(MethodView):
+    """
+    Class that list patient analysis info.
+    """
+    decorators = [validate_params(listanalysisschema)]
+    def get(self, params):
+        command = Command(params, 'patient')
+        command.execute("list_analysis")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
 patient_list_view = PatientListView.as_view('patientlistview')
@@ -234,6 +247,7 @@ appointment_view = Appointment.as_view('appointmentview')
 validate_login_view = Login.as_view('loginview')
 list_catalogue_estado_civil_view = ListCatalogueEstadoCivil.as_view('listcatalogueestadocivil')
 list_catalogue_ocupacion_view = ListCatalogueOcupacion.as_view('listcatalogueocupacion')
+list_patient_analysis_view = ListPatientAnalysis.as_view('listpatientanalysisview')
 
 application.add_url_rule(
     '/patient',
@@ -301,6 +315,13 @@ application.add_url_rule(
 application.add_url_rule(
     '/list/catalogue/ocupacion',
     view_func=list_catalogue_ocupacion_view,
+    methods=[
+        'GET'
+    ]
+)
+application.add_url_rule(
+    '/patient/analysis/list',
+    view_func=list_patient_analysis_view,
     methods=[
         'GET'
     ]

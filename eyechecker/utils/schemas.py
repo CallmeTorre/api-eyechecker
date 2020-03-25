@@ -108,3 +108,8 @@ loginschema = Schema({
     "password":
         Use(str, error="Parámetro 'password' es inválido")
 })
+
+listanalysisschema = Schema({
+    "id":
+        Use(str, error="Parámetro 'id' es inválido"),
+})

@@ -73,3 +73,7 @@ def format_appointment(appointment):
 
 def format_appointments(appointments):
     return [format_appointment(appointment) for appointment in appointments]
+
+
+def format_analysis(analysis):
+    return [{'id': reporte.id, 'url': reporte.url_reporte} for reporte in analysis]
