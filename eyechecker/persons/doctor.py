@@ -123,12 +123,18 @@ class Doctor(Person):
         doctor_info = self.engine.execute(
                             select([
                                 self.persons,
-                                self.table]).\
+                                self.table,
+                                self.account.c.usuario]).\
                             select_from(self.table.\
                                 outerjoin(
                                     self.persons,
                                     self.persons.c.id ==
-                                    self.table.c.id_persona)).\
+                                    self.table.c.id_persona).\
+                                outerjoin(
+                                    self.account,
+                                    self.account.c.id_doctor ==
+                                    self.table.c.id
+                                )).\
                             where(self.persons.c.id == self._params['id'])).fetchone()
         return {
             'nombre': doctor_info.nombre + " " + doctor_info.apellido_paterno + " " + doctor_info.apellido_materno,
@@ -137,7 +143,9 @@ class Doctor(Person):
             'genero': doctor_info.genero,
             'organizacion': doctor_info.organizacion,
             'cedula': doctor_info.cedula,
-            'horario': doctor_info.horario
+            'horario': doctor_info.horario,
+            'fecha_nacimiento': doctor_info.fecha_nacimiento,
+            'usuario':doctor_info.usuario
         }, 200
 
     def reset_password(self):
