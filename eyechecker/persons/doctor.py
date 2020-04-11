@@ -144,7 +144,7 @@ class Doctor(Person):
             'organizacion': doctor_info.organizacion,
             'cedula': doctor_info.cedula,
             'horario': doctor_info.horario,
-            'fecha_nacimiento': doctor_info.fecha_nacimiento,
+            'fecha_nacimiento': doctor_info.fecha_nacimiento.strftime('%Y-%m-%d'),
             'usuario':doctor_info.usuario
         }, 200
 
