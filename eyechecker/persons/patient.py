@@ -254,9 +254,10 @@ class Patient(Person):
             filters.append(self.citas.c.id_paciente == self._params['id_paciente'])
 
         filters.append(self.citas.c.id_doctor == self._params['id_doctor'])
-
-        filters.append(
-            cast(self.citas.c.fecha_agendada, Date) >= cast(self._params['fecha'], Date))
+        
+        if self._params['fecha'] != 'all':
+            filters.append(
+                cast(self.citas.c.fecha_agendada, Date) == cast(self._params['fecha'], Date))
 
         return filters
 

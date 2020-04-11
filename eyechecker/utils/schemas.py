@@ -98,7 +98,6 @@ appointmentschema = Schema({
             error="Parámetro 'fecha_agendada' es inválido"),
     Optional("fecha"):
         And(Use(str),
-            lambda xs: True if (datetime.strptime(xs, '%Y-%m-%d')) else False,
             error="Parámetro 'fecha' es inválido"),
 })
 
