@@ -40,6 +40,7 @@ def upload_pdf_s3(id_paciente, pdf_name):
 
 def create_pdf(result, patient_info):
     info("Creando reporte")
+    current_path = Path(getcwd())
     pdf_name = datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
     title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
@@ -69,8 +70,8 @@ def create_pdf(result, patient_info):
             pdf.showPage()
     pdf.save()
     info("Reporte creado")
-    upload_pdf_s3(patient_info['id_paciente'], pdf_name)
-    info("Borrando reporte")
-    remove(pdf_name)
-    info("Reporte borrado")
-    return pdf_name
+    #upload_pdf_s3(patient_info['id_paciente'], pdf_name)
+    #info("Borrando reporte")
+    #remove(pdf_name)
+    #info("Reporte borrado")
+    return path.join(current_path, pdf_name)

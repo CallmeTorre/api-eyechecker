@@ -192,15 +192,15 @@ class Patient(Person):
         patient_info , _ = self.get()
         for eye in ['left_eye', 'right_eye']:
             result.update(image_analysis(eye, self._params))
-        pdf_name = create_pdf(result, patient_info)
+        pdf_path = create_pdf(result, patient_info)
         reporte_info = {
             'id_paciente': patient_info['id_paciente'],
             'id_doctor': self._params['id_medico'],
-            'url_reporte': str(patient_info['id_paciente']) + '/' + pdf_name
+            'url_reporte': pdf_path
         }
         id_reporte = self.engine.execute(
                 self.reportes.insert().values(**reporte_info)).inserted_primary_key[0]
-        return {'pdf': pdf_name,
+        return {'pdf_path': pdf_path,
                 'id_reporte': id_reporte}, 200
 
     def _check_appointment_availability_filters(self):
