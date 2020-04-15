@@ -99,6 +99,8 @@ appointmentschema = Schema({
     Optional("fecha"):
         And(Use(str),
             error="Parámetro 'fecha' es inválido"),
+    Optional("estado_cita"):
+        Use(int, error="Parámetro 'estado_cita' es inválido")
 })
 
 loginschema = Schema({
