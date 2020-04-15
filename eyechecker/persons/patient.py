@@ -234,6 +234,7 @@ class Patient(Person):
         """
         transaction = self._connection.begin()
         try:
+            self._params['estado_cita'] = 1
             if self._check_appointment_availability() is True:
                 self._connection.execute(
                     self.citas.insert().values(**self._params))
