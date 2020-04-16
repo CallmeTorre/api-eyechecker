@@ -32,7 +32,9 @@ patientschema = Schema({
     Optional("enfermedades_cronicas"):
         Use(list, error="Parámetro 'enfermedades_cronicas' es inválido"),
     Optional("enfermedades_hereditarias"):
-        Use(str, error="Parámetro 'enfermedades_hereditarias' es inválido")
+        Use(str, error="Parámetro 'enfermedades_hereditarias' es inválido"),
+    Optional("id_doctor"):
+        Use(str, error="Parámetro 'id_doctor' es inválido")
 })
 
 doctorschema = Schema({
@@ -69,6 +71,8 @@ patientlistschema = Schema({
         Use(str, error="Parámetro 'nombre' es inválido"),
     "curp":
         Use(str, error="Parámetro 'curp' es inválido"),
+    "id_doctor":
+       Use(str, error="Parámetro 'id_doctor' es inválido")
 })
 
 resetpasswordschema = Schema({

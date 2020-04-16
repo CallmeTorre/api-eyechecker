@@ -102,6 +102,8 @@ class Patient(Person):
             filters.append(self.table.c.curp.ilike(like_string))
             return filters
 
+        filters.append(self.table.c.id_doctor == self._params['id_doctor'])
+
         return filters
 
     def list(self):

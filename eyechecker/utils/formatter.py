@@ -25,7 +25,8 @@ def format_patient(params):
         'enfermedades_recientes': params['enfermedades_recientes'],
         'medicamentos': params['medicamentos'],
         'enfermedades_cronicas': params['enfermedades_cronicas'],
-        'enfermedades_hereditarias': params['enfermedades_hereditarias']
+        'enfermedades_hereditarias': params['enfermedades_hereditarias'],
+        'id_doctor': params['id_doctor']
     }
 
 
