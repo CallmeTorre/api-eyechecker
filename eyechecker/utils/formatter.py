@@ -66,8 +66,9 @@ def format_appointment(appointment):
     return {
         'id_cita': appointment.id,
         'id_paciente': appointment.id_paciente,
-        'fecha_agendada': appointment.fecha_agendada,
-        'nombre': appointment.nombre
+        'fecha_agendada': appointment.fecha_agendada.strftime('%Y-%m-%d'),
+        'nombre': appointment.nombre,
+        'fecha_creacion': appointment.fecha_creacion.strftime('%Y-%m-%d')
     }
 
 

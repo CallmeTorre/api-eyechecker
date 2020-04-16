@@ -256,6 +256,8 @@ class Patient(Person):
 
         filters.append(self.citas.c.id_doctor == self._params['id_doctor'])
         
+        filters.append(self.citas.c.estado_cita == 1)
+
         if self._params['fecha'] != 'all':
             filters.append(
                 cast(self.citas.c.fecha_agendada, Date) == cast(self._params['fecha'], Date))
@@ -271,6 +273,7 @@ class Patient(Person):
                                 self.citas.c.id,
                                 self.citas.c.id_paciente,
                                 self.citas.c.fecha_agendada,
+                                self.citas.c.fecha_creacion,
                                 (cast(self.persons.c.nombre, String) + " " + \
                                  cast(self.persons.c.apellido_paterno, String) + " " + \
                                  cast(self.persons.c.apellido_materno, String)).label('nombre')]).\
@@ -334,6 +337,12 @@ class Patient(Person):
             select([
                 self.cat_ocupacion])).fetchall()
         return {info.id: info.ocupacion for info in catalogue_info}, 200
+
+    def list_catalogue_estado_cita(self):
+        catalogue_info = self.engine.execute(
+            select([
+                self.cat_estado_cita])).fetchall()
+        return {info.id: info.texto for info in catalogue_info}, 200
 
     def list_analysis(self):
         analysis = self.engine.execute(

@@ -47,6 +47,12 @@ class Person(metaclass=ABCMeta):
             self.meta,
             autoload=True,
             autoload_with=self.engine)
+        self._cat_estado_cita = Table(
+            'cat_estado_cita',
+            self.meta,
+            autoload=True,
+            autoload_with=self.engine
+        )
         self._connection = self.engine.connect()
 
     @property
@@ -83,6 +89,13 @@ class Person(metaclass=ABCMeta):
         Ocupacion Catalog.
         """
         return self._cat_ocupacion
+
+    @property
+    def cat_estado_cita(self):
+        """
+        Estado Cita Catalog.
+        """
+        return self._cat_estado_cita
 
     @property
     def citas(self):
