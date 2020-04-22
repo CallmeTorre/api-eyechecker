@@ -203,7 +203,9 @@ class Doctor(Person):
         """
         account_info = self.engine.execute(
             select([
-                    self.account.c.id,
+                    self.account.c.id.label('id_cuenta'),
+                    self.table.c.id.label('id_doctor'),
+                    self.persons.c.id.label('id_persona'),
                     self.account.c.usuario,
                     self.account.c.password]).\
                 select_from(self.account.\
@@ -220,6 +222,12 @@ class Doctor(Person):
         if account_info == None:
             return {'access': False}, 403
         elif account_info.password != self._params['password']:
-            return {'access': False}, 403
+            return {'access': False,
+                    'id_doctor': account_info['id_doctor'],
+                    'id_persona': account_info['id_persona'],
+                    'id_cuenta': account_info['id_cuenta']}, 403
         else:
-            return {'access': True}, 200
+            return {'access': True,
+                    'id_doctor': account_info['id_doctor'],
+                    'id_persona': account_info['id_persona'],
+                    'id_cuenta': account_info['id_cuenta']}, 200
