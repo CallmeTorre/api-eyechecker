@@ -272,10 +272,12 @@ class Patient(Person):
         """
         appointments = self.engine.execute(
                             select([
+                                self.persons.c.id.label('id_persona'),
                                 self.citas.c.id,
                                 self.citas.c.id_paciente,
                                 self.citas.c.fecha_agendada,
                                 self.citas.c.fecha_creacion,
+                                self.cat_estado_cita.c.texto.label('estado_cita'),
                                 (cast(self.persons.c.nombre, String) + " " + \
                                  cast(self.persons.c.apellido_paterno, String) + " " + \
                                  cast(self.persons.c.apellido_materno, String)).label('nombre')]).\
@@ -287,7 +289,11 @@ class Patient(Person):
                                 outerjoin(
                                     self.persons,
                                     self.persons.c.id ==
-                                    self.table.c.id_persona)).\
+                                    self.table.c.id_persona).\
+                                outerjoin(
+                                    self.cat_estado_cita,
+                                    self.citas.c.estado_cita ==
+                                    self.cat_estado_cita.c.id)).\
                             where(
                                 and_(*self.patient_citas_filters())).\
                             order_by(desc('fecha_agendada'))).fetchall()
