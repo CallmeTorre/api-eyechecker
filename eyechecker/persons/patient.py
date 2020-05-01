@@ -356,7 +356,9 @@ class Patient(Person):
         analysis = self.engine.execute(
             select([
                 self.reportes.c.id,
-                self.reportes.c.url_reporte]).\
+                self.reportes.c.url_reporte,
+                self.reportes.c.fecha_creacion,
+                self.reportes.c.comentarios]).\
             where(self.reportes.c.id_paciente == self._params['id'])
         ).fetchall()
         return format_analysis(analysis), 200
