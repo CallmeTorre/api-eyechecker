@@ -58,8 +58,8 @@ class Patient(Person):
         transaction = self._connection.begin()
         try:
             self._connection.execute(
-                self.persons.delete().\
-                where(self.persons.c.id == self._params['id']))
+                self.table.delete().\
+                where(self.table.c.id == self._params['id']))
             transaction.commit()
             return {'status': 'Paciente borrado correctamente'}, 200
         except Exception as e:
