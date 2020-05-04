@@ -366,3 +366,18 @@ class Patient(Person):
     def get_analysis(self):
         response = get_pdf_url(self._params['url'])
         return {'url': response}, 200
+
+    def update_comment(self):
+        transaction = self._connection.begin()
+        try:
+            self._connection.execute(
+                self.reportes.update().\
+                where(self.reportes.c.id == self._params['id_reporte']).\
+                values(comentarios=self._params['comentario']))
+            transaction.commit()
+            return {'status': 'Comentario agregado correctamente'}, 200
+        except Exception as e:
+            logging.error("No se pudo actualizar el comentario")
+            logging.exception(str(e))
+            transaction.rollback()
+            return {'error': "No se pudo agregar el comentario"}, 500

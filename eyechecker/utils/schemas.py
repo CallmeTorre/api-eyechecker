@@ -123,3 +123,10 @@ getanalysisschema = Schema({
     "url":
         Use(str, error="Parámetro 'url' es inválido"),
 })
+
+commentschema = Schema({
+    "id_reporte":
+        Use(str, error="Parámetro 'id_reporte' es inválido"),
+    "comentario":
+        Use(str, error="Parámetro 'comentario' es inválido")
+})

@@ -20,7 +20,8 @@ from eyechecker.utils.schemas import (patientschema,
                                       appointmentschema,
                                       loginschema,
                                       listanalysisschema,
-                                      getanalysisschema)
+                                      getanalysisschema,
+                                      commentschema)
 
 application = Flask(__name__)
 
@@ -261,6 +262,24 @@ class ListPatientAnalysis(MethodView):
 #            jsonify(command.result),
 #            command.status)
 
+class Comment(MethodView):
+
+    decorators = [validate_params(commentschema)]
+    def post(self, params):
+        command = Command(params, 'patient')
+        command.execute("update_comment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+
+    def put(self, params):
+        command = Command(params, 'patient')
+        command.execute("update_comment")
+        return make_response(
+            jsonify(command.result),
+            command.status)
+    
+
 patient_view = PatientView.as_view('patientview')
 doctor_view = DoctorView.as_view('doctorview')
 patient_list_view = PatientListView.as_view('patientlistview')
@@ -274,6 +293,7 @@ list_catalogue_ocupacion_view = ListCatalogueOcupacion.as_view('listcatalogueocu
 list_catalogue_estado_cita_view = ListCatalogueEstadoCita.as_view('listacatalogueestadocita')
 list_patient_analysis_view = ListPatientAnalysis.as_view('listpatientanalysisview')
 #get_patient_analysis_view = GetPatientAnalysis.as_view('getpatientanalysisview')
+comment_view = Comment.as_view('commentview')
 
 application.add_url_rule(
     '/patient',
@@ -357,6 +377,13 @@ application.add_url_rule(
     view_func=list_patient_analysis_view,
     methods=[
         'GET'
+    ]
+)
+application.add_url_rule(
+    '/patient/analysis/comment',
+    view_func=comment_view,
+    methods=[
+        'POST', 'PUT'
     ]
 )
 #application.add_url_rule(
