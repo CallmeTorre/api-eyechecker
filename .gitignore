@@ -91,3 +91,5 @@ virtualenv/
 
 #OS X File
 .DS_Store
+
+*.pdf
