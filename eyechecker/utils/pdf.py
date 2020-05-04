@@ -50,8 +50,8 @@ def create_pdf(result, patient_info):
         if value != {}:
             pdf.drawString(420, height-100, "Fecha: " + datetime.now().strftime("%d/%m/%Y"))
             pdf.drawString(80, height-140, "Nombre del Paciente: " + patient_info['nombre'])
-            pdf.drawString(80, height-180, "Fecha de nacimiento: " + patient_info['fecha_nacimiento'].strftime("%d/%m/%Y"))
-            pdf.drawString(405, height-180, "Edad: " + str(relativedelta(datetime.now(), patient_info['fecha_nacimiento']).years) + " años"),
+            pdf.drawString(80, height-180, "Fecha de nacimiento: " + patient_info['fecha_nacimiento'])
+            pdf.drawString(405, height-180, "Edad: " + str(relativedelta(datetime.now(), datetime.strptime(patient_info['fecha_nacimiento'], '%d-%m-%Y')).years) + " años"),
             pdf.drawString(80, height-220, "Genero: " + patient_info['genero'])
             pdf.drawString(80, height-260, "Ojo analizado: " + EYES[key])
             pdf.drawString(80, height-300, "Conclusión: " + value['conclusion'])
