@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy import Table, cast, desc
-from sqlalchemy.sql import select, and_
+from sqlalchemy.sql import select, and_, or_
 from sqlalchemy.types import String, Date
 
 from eyechecker.persons.person import Person
@@ -258,7 +258,9 @@ class Patient(Person):
 
         filters.append(self.citas.c.id_doctor == self._params['id_doctor'])
         
-        filters.append(self.citas.c.estado_cita == 1)
+        filters.append(
+            or_(self.citas.c.estado_cita == 1,
+            self.citas.c.estado_cita == 4))
 
         if self._params['fecha'] != 'all':
             filters.append(
