@@ -171,7 +171,7 @@ class Patient(Person):
         return {
             'id_paciente': patient_info.id_paciente,
             'nombre': patient_info.nombre + " " + patient_info.apellido_paterno + " " + patient_info.apellido_materno,
-            'fecha_nacimiento': patient_info.fecha_nacimiento,
+            'fecha_nacimiento': patient_info.fecha_nacimiento.strftime("%d-%m-%Y"),
             'email': patient_info.email,
             'telefono_celular': patient_info.telefono_celular,
             'genero': patient_info.genero,
