@@ -203,6 +203,7 @@ class Patient(Person):
         id_reporte = self.engine.execute(
                 self.reportes.insert().values(**reporte_info)).inserted_primary_key[0]
         return {'pdf_path': pdf_path,
+                'pdf_name': pdf_path.split('/')[-1],
                 'id_reporte': id_reporte}, 200
 
     def _check_appointment_availability_filters(self):

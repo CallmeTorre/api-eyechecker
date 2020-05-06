@@ -41,10 +41,12 @@ def upload_pdf_s3(id_paciente, pdf_name):
 def create_pdf(result, patient_info):
     info("Creando reporte")
     current_path = Path(getcwd())
+    parent_path = current_path.parent
     pdf_name = datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
     title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
-    pdf = Canvas(pdf_name, pagesize=letter)
+    save_name = path.join(parent_path, "ui-eyechecker/", "src/", pdf_name)
+    pdf = Canvas(save_name, pagesize=letter)
     pdf.setTitle(title)
     for key, value in result.items():
         if value != {}:
@@ -74,4 +76,4 @@ def create_pdf(result, patient_info):
     #info("Borrando reporte")
     #remove(pdf_name)
     #info("Reporte borrado")
-    return path.join(current_path, pdf_name)
+    return save_name
