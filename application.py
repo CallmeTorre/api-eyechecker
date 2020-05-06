@@ -250,17 +250,17 @@ class ListPatientAnalysis(MethodView):
             jsonify(command.result),
             command.status)
 
-#class GetPatientAnalysis(MethodView):
+class GetPatientAnalysis(MethodView):
     """
     Class that get patient analysis info.
     """
-#    decorators = [validate_params(getanalysisschema)]
-#    def get(self, params):
-#        command = Command(params, 'patient')
-#        command.execute("get_analysis")
-#        return make_response(
-#            jsonify(command.result),
-#            command.status)
+    decorators = [validate_params(getanalysisschema)]
+    def get(self, params):
+        command = Command(params, 'patient')
+        command.execute("get_analysis")
+        return make_response(
+            jsonify(command.result),
+            command.status)
 
 class Comment(MethodView):
 
@@ -292,7 +292,7 @@ list_catalogue_estado_civil_view = ListCatalogueEstadoCivil.as_view('listcatalog
 list_catalogue_ocupacion_view = ListCatalogueOcupacion.as_view('listcatalogueocupacion')
 list_catalogue_estado_cita_view = ListCatalogueEstadoCita.as_view('listacatalogueestadocita')
 list_patient_analysis_view = ListPatientAnalysis.as_view('listpatientanalysisview')
-#get_patient_analysis_view = GetPatientAnalysis.as_view('getpatientanalysisview')
+get_patient_analysis_view = GetPatientAnalysis.as_view('getpatientanalysisview')
 comment_view = Comment.as_view('commentview')
 
 application.add_url_rule(
@@ -386,13 +386,13 @@ application.add_url_rule(
         'POST', 'PUT'
     ]
 )
-#application.add_url_rule(
-#    '/patient/analysis/get',
-#    view_func=get_patient_analysis_view,
-#    methods=[
-#        'GET'
-#    ]
-#)
+application.add_url_rule(
+    '/patient/analysis/get',
+    view_func=get_patient_analysis_view,
+    methods=[
+        'GET'
+    ]
+)
 @application.errorhandler(500)
 def internal_error(error):
     """

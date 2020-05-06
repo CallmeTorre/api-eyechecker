@@ -366,8 +366,16 @@ class Patient(Person):
         return format_analysis(analysis), 200
 
     def get_analysis(self):
-        response = get_pdf_url(self._params['url'])
-        return {'url': response}, 200
+        #response = get_pdf_url(self._params['url'])
+        #return {'url': response}, 200
+        analysis = self.engine.execute(
+            select([
+                self.reportes.c.url_reporte,
+                self.reportes.c.fecha_creacion,]).\
+            where(self.reportes.c.id == self._params['id_reporte'])).fetchone()
+        return {
+            'nombre_reporte': analysis.url_reporte.split('/')[-1],
+            'fecha': analysis.fecha_creacion.strftime("%d-%m-%Y")}, 200
 
     def update_comment(self):
         transaction = self._connection.begin()

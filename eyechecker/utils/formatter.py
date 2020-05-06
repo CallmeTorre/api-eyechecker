@@ -83,5 +83,6 @@ def format_appointments(appointments):
 def format_analysis(analysis):
     return [{'id': reporte.id, 
              'url': reporte.url_reporte, 
+             'nombre_reporte': reporte.url_reporte.split('/')[-1],
              'fecha_creacion': reporte.fecha_creacion.strftime('%Y-%m-%d %H:%M'),
              'comentarios': reporte.comentarios} for reporte in analysis]

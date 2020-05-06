@@ -120,8 +120,10 @@ listanalysisschema = Schema({
 })
 
 getanalysisschema = Schema({
-    "url":
-        Use(str, error="Parámetro 'url' es inválido"),
+    #"url":
+    #    Use(str, error="Parámetro 'url' es inválido"),
+    "id_reporte":
+        Use(int, error="Parámetro 'id_reporte' es inválido")
 })
 
 commentschema = Schema({
