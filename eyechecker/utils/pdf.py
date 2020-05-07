@@ -45,7 +45,7 @@ def create_pdf(result, patient_info):
     pdf_name = datetime.now().strftime("%d%m%Y%H%M%S") + ".pdf"
     title = "Reporte del paciente: " + patient_info['nombre']
     width, height = letter
-    save_name = path.join(parent_path, "ui-eyechecker/", "src/", pdf_name)
+    save_name = path.join(parent_path, "ui-eyechecker/", "public/", pdf_name)
     pdf = Canvas(save_name, pagesize=letter)
     pdf.setTitle(title)
     for key, value in result.items():
