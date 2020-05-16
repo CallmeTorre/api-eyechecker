@@ -46,6 +46,17 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+      Policies:
+        - PolicyName: Sub EyeChecker${EnvType}CodeBuildPackagePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                Resource:
+                  - !GetAtt S3Bucket.Arn
+                  - !Sub ${S3Bucket.Arn}/*
 
   CodeBuild:
     Type: AWS::CodeBuild::Project
@@ -129,22 +140,6 @@ Resources:
                 Resource:
                   - !GetAtt CloudFormationRole.Arn
 
-  GitHubPipelineWebHook:
-    Type: AWS::CodePipeline::Webhook
-    Properties:
-      Authentication: GITHUB_HMAC
-      AuthenticationConfiguration:
-        SecretToken: !Ref GitHubToken
-      Filters:
-        - 
-          JsonPath: "$.ref"
-          MatchEquals: refs/heads/{Branch}
-      TargetPipeline: !Ref Pipeline
-      TargetAction: Source
-      Name: !Sub EyeChecker${EnvType}DeployPipelineWebhook
-      TargetPipelineVersion: !GetAtt Pipeline.Version
-      RegisterWithThirdParty: true
-
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -156,7 +151,7 @@ Resources:
       Stages:
         - Name: Source
           Actions:
-            - Name: Source
+            - Name: SourceAction
               ActionTypeId:
                 Category: Source
                 Owner: ThirdParty
@@ -173,7 +168,7 @@ Resources:
                 OAuthToken: !Ref GitHubToken
         - Name: Package
           Actions:
-          - Name: Package
+          - Name: PackageAction
             ActionTypeId: 
               Category: Build
               Owner: AWS
@@ -188,7 +183,7 @@ Resources:
             RunOrder: 2
         - Name: Deploy
           Actions:
-          - Name: Deploy
+          - Name: DeployAction
             ActionTypeId:
               Category: Deploy
               Owner: AWS
@@ -203,3 +198,19 @@ Resources:
               RoleArn: !GetAtt CloudFormationRole.Arn
               TemplatePath: PackageArtifact::stack.yaml
             RunOrder: 3
+
+  GitHubPipelineWebHook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GitHubToken
+      Filters:
+        - 
+          JsonPath: "$.ref"
+          MatchEquals: !Sub refs/heads/${Branch}
+      TargetPipeline: !Ref Pipeline
+      TargetAction: SourceAction
+      Name: !Sub EyeChecker${EnvType}DeployPipelineWebhook
+      TargetPipelineVersion: !GetAtt Pipeline.Version
+      RegisterWithThirdParty: true
