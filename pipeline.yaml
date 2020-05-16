@@ -1,4 +1,4 @@
-AWSTemplateFormationVersion: "2010-09-09"
+AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
   Branch:
@@ -29,7 +29,7 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub EyeChecker${EnvType}BucketArtifactStore
+      BucketName: !Sub eyechecker${EnvType}bucketartifactstore
 
   CodeBuildRole:
     Type: AWS::IAM::Role
@@ -83,6 +83,8 @@ Resources:
                   - "s3:CreateBucket"
                   - "s3:DeleteBucket"
                   - "s3:ListBucket"
+                Resource:
+                  - "*"
 
   PipelineRole:
     Type: AWS::IAM::Role
@@ -113,7 +115,7 @@ Resources:
                   - "codebuild:StartBuild"
                   - "codebuild:BatchGetBuilds"
                 Resource:
-                  - !GetAtt CodeBuildPackage.Arn
+                  - !GetAtt CodeBuild.Arn
               - Effect: "Allow"
                 Action:
                   - "cloudformation:*"
@@ -146,7 +148,7 @@ Resources:
                 - Name: CodeArtifact
               RunOrder: 1
               Configuration:
-                Owner: !Ref RepoOwner
+                Owner: !Ref RepositoryOwner
                 Repo: !Ref RepositoryName
                 PollForSourceChanges: false
                 Branch: !Ref Branch
