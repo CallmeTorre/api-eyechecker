@@ -1,0 +1,13 @@
+version: 0.2
+
+Phases:
+  build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - echo "Packaging template"
+      - aws cloudformation package --template-file stack.yaml --output-template-file stack-export.yaml --s3-bucket $BUCKET
+      - echo "Packaging completed"
+artifacts:
+  discard-paths: yes
+  files:
+    - $CODEBUILD_SRC_DIR/stack.yaml
