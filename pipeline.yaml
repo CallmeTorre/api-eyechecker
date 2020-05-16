@@ -1,0 +1,185 @@
+AWSTemplateFormationVersion: "2010-09-09"
+
+Parameters:
+  Branch:
+    Type: String
+    Description: Branch from where the pipeline will pull the changes.
+  EnvType:
+    Description: Environment type.
+    Default: production
+    Type: String
+    AllowedValues: [production, staging, development]
+    ConstraintDescription: Must specify an allowed value (production, staging or development).
+  RepositoryOwner:
+    Description: Repository Owner
+    Default: OwnerName
+    Type: String
+  RepositoryName:
+    Description: Repository Name
+    Default: RepositoryName
+    Type: String
+  GitHubToken:
+    Description: GitHub OAuthToken
+    Default: '*********'
+    Type: String
+  
+
+Resources:
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub EyeChecker${EnvType}BucketArtifactStore
+
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub EyeChecker${EnvType}CodeBuildPackageRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "codebuild.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+
+  CodeBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub EyeChecker${EnvType}CodeBuildPackage
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:2.0
+        PrivilegedMode: true
+      Source:
+        Type: CODEPIPELINE
+
+  CloudFormationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub EyeChecker${EnvType}StackRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "cloudformation.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: !Sub EyeChecker${EnvType}StackPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:CreateBucket"
+                  - "s3:DeleteBucket"
+                  - "s3:ListBucket"
+
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub EyeChecker${EnvType}DeployPipelineRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "codepipeline.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: !Sub EyeChecker${EnvType}DeployPipelinePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:*"
+                Resource:
+                  - !GetAtt S3Bucket.Arn
+                  - !Sub ${S3Bucket.Arn}/*
+              - Effect: "Allow"
+                Action:
+                  - "codebuild:StartBuild"
+                  - "codebuild:BatchGetBuilds"
+                Resource:
+                  - !GetAtt CodeBuildPackage.Arn
+              - Effect: "Allow"
+                Action:
+                  - "cloudformation:*"
+                Resource:
+                  - "*"
+              - Effect: "Allow"
+                Action:
+                  - "iam:PassRole"
+                Resource:
+                  - !GetAtt CloudFormationRole.Arn
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub EyeChecker${EnvType}DeployPipeline
+      ArtifactStore:
+        Type: S3
+        Location: !Ref S3Bucket
+      RoleArn: !GetAtt PipelineRole.Arn
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              OutputArtifacts:
+                - Name: CodeArtifact
+              RunOrder: 1
+              Configuration:
+                Owner: !Ref RepoOwner
+                Repo: !Ref RepositoryName
+                PollForSourceChanges: false
+                Branch: !Ref Branch
+                OAuthToken: !Ref GitHubToken
+        - Name: Package
+          Actions:
+          - Name: Package
+            ActionTypeId: 
+              Category: Build
+              Owner: AWS
+              Version: 1
+              Provider: CodeBuild
+            InputArtifacts:
+              - Name: CodeArtifact
+            OutputArtifacts:
+              - Name: PackageArtifact
+            Configuration:
+              ProjectName: !Ref CodeBuild
+            RunOrder: 2
+        - Name: Deploy
+          Actions:
+          - Name: Deploy
+            ActionTypeId:
+              Category: Deploy
+              Owner: AWS
+              Version: 1
+              Provider: CloudFormation
+            InputArtifacts:
+              - Name: PackageArtifact
+            Configuration:
+              ActionMode: CREATE_UPDATE
+              Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
+              StackName: !Sub EyeChecker${EnvType}Stack
+              RoleArn: !GetAtt CloudFormationRole.Arn
+              TemplatePath: PackageArtifact::stack.yaml
+            RunOrder: 3
