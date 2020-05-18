@@ -5,7 +5,7 @@ Phases:
     commands:
       - cd $CODEBUILD_SRC_DIR
       - echo "Packaging template"
-      - aws cloudformation package --template-file stack.yaml --output-template-file stack-export.yaml --s3-bucket $BUCKET
+      - aws cloudformation package --template-file stack.yaml --output-template-file stack-export.yaml
       - echo "Packaging completed"
 artifacts:
   discard-paths: yes
