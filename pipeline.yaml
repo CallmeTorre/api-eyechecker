@@ -47,7 +47,7 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
       Policies:
-        - PolicyName: Sub EyeChecker${EnvType}CodeBuildPackagePolicy
+        - PolicyName: !Sub EyeChecker${EnvType}CodeBuildPackagePolicy
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
