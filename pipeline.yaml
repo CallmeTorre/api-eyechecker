@@ -70,6 +70,10 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:2.0
         PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: BUCKET
+            Type: PLAINTEXT
+            Value: !Ref S3Bucket
       Source:
         Type: CODEPIPELINE
 
