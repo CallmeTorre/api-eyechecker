@@ -9,4 +9,4 @@ schema==0.7.1
 python-dotenv==0.12.0
 psycopg2-binary==2.8.4
 Flask-Cors==3.0.8
-Sphinx==2.4.4
+Sphinx==3.5.1
